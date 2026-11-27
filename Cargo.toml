@@ -9,4 +9,6 @@ repository = "https://github.com/kerembsd/archinstall-tui-rs"
 [workspace]
 
 [dependencies]
-bash2rust-runtime = { git = "https://github.com/kerembsd/bash2rust" }
+libc = "0.2"
+regex = "1"
+thiserror = "2.0"

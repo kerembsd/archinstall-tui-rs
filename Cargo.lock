@@ -15,14 +15,6 @@ dependencies = [
 name = "archinstall-tui-rs"
 version = "0.1.0"
 dependencies = [
- "bash2rust-runtime",
-]
-
-[[package]]
-name = "bash2rust-runtime"
-version = "0.1.0"
-source = "git+https://github.com/kerembsd/bash2rust#b73c13de9be6b7ae8e91d18000d0ab424dca931f"
-dependencies = [
  "libc",
  "regex",
  "thiserror",

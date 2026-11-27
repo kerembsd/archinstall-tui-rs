@@ -8,6 +8,9 @@
     unused_variables
 )]
 
+mod runtime;
+use runtime as bash2rust_runtime;
+
 fn init_logging(
     __shell: &mut bash2rust_runtime::ShellState,
     __raw_args: &[&str],
@@ -1991,14 +1994,14 @@ fn dash_build_frame(
             __res
         };
         while {
-            __shell.set_var("total_steps", total_steps.clone());
             __shell.set_var("l", l.clone());
+            __shell.set_var("total_steps", total_steps.clone());
             let __res = __shell.eval_arith("i < total_steps");
-            if let Some(__v) = __shell.get_var("total_steps") {
-                total_steps = __v.to_owned();
-            }
             if let Some(__v) = __shell.get_var("l") {
                 l = __v.to_owned();
+            }
+            if let Some(__v) = __shell.get_var("total_steps") {
+                total_steps = __v.to_owned();
             }
             __res
         } != 0
@@ -7539,8 +7542,8 @@ fn list_region_cities(
             );
             __shell.enter_subshell();
             let __sub_res = (|| -> Result<(), Box<dyn std::error::Error>> {
-                let mut region = region.clone();
                 let mut cities = cities.clone();
+                let mut region = region.clone();
                 {
                     let __ao_ok = ({
                         let __prog = String::from("cd");
@@ -21942,344 +21945,140 @@ fn __dispatch_dynamic_fn(
     args: &[&str],
 ) -> Result<Option<i32>, Box<dyn std::error::Error>> {
     match prog {
-        "dash_build_frame" => {
-            dash_build_frame(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "get_term_size" => {
-            get_term_size(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_start" => {
-            dash_start(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_run_tui_no_out" => {
-            _run_tui_no_out(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_checklist" => {
-            ui_checklist(__shell, args)?;
+        "build_keyboard_menu" => {
+            build_keyboard_menu(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "dash_render" => {
             dash_render(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "on_interrupt" => {
-            on_interrupt(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "retry_cmd" => {
-            retry_cmd(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "calc_ui_dims" => {
-            calc_ui_dims(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_log_file_append" => {
-            _log_file_append(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "err" => {
-            err(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_update_step" => {
-            dash_update_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "list_region_cities" => {
-            list_region_cities(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_filesystem" => {
-            prompt_filesystem(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "configuration_hub" => {
-            configuration_hub(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_prepare_mirrors" => {
-            step_prepare_mirrors(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_finalize" => {
-            step_finalize(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_menu" => {
-            ui_menu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "write_chroot_vars" => {
-            write_chroot_vars(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_swap" => {
-            prompt_swap(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_gpu_and_vm" => {
-            detect_gpu_and_vm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_push_log" => {
-            dash_push_log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "init_tui" => {
-            init_tui(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_info" => {
-            ui_info(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "recommended_dm_for_de" => {
-            recommended_dm_for_de(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "extras_summary" => {
-            extras_summary(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_welcome" => {
-            prompt_welcome(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_desktop" => {
-            prompt_desktop(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_password_strength" => {
-            validate_password_strength(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_guided_step_applicable" => {
-            _guided_step_applicable(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_emit_log" => {
-            _emit_log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_error" => {
-            ui_error(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_begin_step" => {
-            dash_begin_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_hostname" => {
-            validate_hostname(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_stop" => {
-            dash_stop(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "show_version" => {
-            show_version(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_package_name" => {
-            validate_package_name(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_run_tui_capture" => {
-            _run_tui_capture(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_format_bar" => {
-            dash_format_bar(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_cpu_microcode" => {
-            detect_cpu_microcode(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_kernel" => {
-            prompt_kernel(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_dm" => {
-            prompt_dm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_gpu" => {
-            prompt_gpu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_fail_step" => {
-            dash_fail_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_yesno" => {
-            ui_yesno(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "preflight_check" => {
-            preflight_check(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_encryption" => {
-            prompt_encryption(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "strip_ansi" => {
-            strip_ansi(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "log_debug" => {
-            log_debug(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_finish_step" => {
-            dash_finish_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_network" => {
-            prompt_network(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_extras" => {
-            prompt_extras(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_extra_custom_packages" => {
-            step_extra_custom_packages(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "warn" => {
-            warn(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_run_chroot" => {
-            step_run_chroot(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "init_logging" => {
-            init_logging(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "section" => {
-            section(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_boot_mode" => {
-            detect_boot_mode(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "trim" => {
-            trim(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_bootloader" => {
-            prompt_bootloader(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_audio" => {
-            prompt_audio(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_genfstab" => {
-            step_genfstab(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "main" => {
-            main_2(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_password" => {
-            ui_password(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "check_disk_space" => {
-            check_disk_space(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_firewall" => {
-            prompt_firewall(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "run_guided_setup" => {
-            run_guided_setup(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "do_cleanup" => {
-            do_cleanup(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "check_internet" => {
-            check_internet(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_passwords" => {
-            prompt_passwords(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "get_ram_mb" => {
-            get_ram_mb(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "build_locale_menu" => {
-            build_locale_menu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_locale_keymap_tz" => {
-            prompt_locale_keymap_tz(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "on_exit" => {
-            on_exit(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "log" => {
-            log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_user_and_host" => {
-            prompt_user_and_host(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_format_elapsed" => {
-            dash_format_elapsed(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "build_keyboard_menu" => {
-            build_keyboard_menu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "map_tty_keymap" => {
-            map_tty_keymap(__shell, args)?;
+        "validate_username" => {
+            validate_username(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "_normalize_tui_rc" => {
             _normalize_tui_rc(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "on_error" => {
-            on_error(__shell, args)?;
+        "check_disk_space" => {
+            check_disk_space(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "_dry_run_validate_profile" => {
-            _dry_run_validate_profile(__shell, args)?;
+        "prompt_welcome" => {
+            prompt_welcome(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "is_nvidia_gpu" => {
-            is_nvidia_gpu(__shell, args)?;
+        "prompt_filesystem" => {
+            prompt_filesystem(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_aur" => {
+            prompt_aur(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_setup_storage" => {
+            step_setup_storage(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "parse_args" => {
+            parse_args(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_format_bar" => {
+            dash_format_bar(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_fail_step" => {
+            dash_fail_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "do_cleanup" => {
+            do_cleanup(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "trim" => {
+            trim(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_push_log" => {
+            dash_push_log(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_update_step" => {
+            dash_update_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "show_help" => {
+            show_help(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_genfstab" => {
+            step_genfstab(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_password" => {
+            ui_password(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_format_elapsed" => {
+            dash_format_elapsed(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "build_package_list" => {
+            build_package_list(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_checklist" => {
+            ui_checklist(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_pacstrap" => {
+            step_pacstrap(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "check_internet" => {
+            check_internet(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "warn" => {
+            warn(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_firewall" => {
+            prompt_firewall(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "retry_cmd" => {
+            retry_cmd(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_exit" => {
+            on_exit(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "show_version" => {
+            show_version(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_kernel" => {
+            prompt_kernel(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "init_tui" => {
+            init_tui(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_swap" => {
+            prompt_swap(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "dash_init" => {
             dash_init(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "prompt_aur" => {
-            prompt_aur(__shell, args)?;
+        "_run_tui_capture" => {
+            _run_tui_capture(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "ui_confirm" => {
@@ -22290,64 +22089,268 @@ fn __dispatch_dynamic_fn(
             ui_input(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "get_partition_paths" => {
-            get_partition_paths(__shell, args)?;
+        "detect_cpu_microcode" => {
+            detect_cpu_microcode(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "_discover_disks" => {
-            _discover_disks(__shell, args)?;
+        "preflight_check" => {
+            preflight_check(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "step_setup_storage" => {
-            step_setup_storage(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "run_dry_run" => {
-            run_dry_run(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "build_package_list" => {
-            build_package_list(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_disk" => {
-            prompt_disk(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_calc_total_pct" => {
-            dash_calc_total_pct(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_username" => {
-            validate_username(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_desktop_and_dm" => {
-            prompt_desktop_and_dm(__shell, args)?;
+        "is_nvidia_gpu" => {
+            is_nvidia_gpu(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "step_prepare_disk" => {
             step_prepare_disk(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "write_chroot_script" => {
-            write_chroot_script(__shell, args)?;
+        "run_guided_setup" => {
+            run_guided_setup(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_start" => {
+            dash_start(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_prepare_mirrors" => {
+            step_prepare_mirrors(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "calc_ui_dims" => {
+            calc_ui_dims(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_desktop" => {
+            prompt_desktop(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_yesno" => {
+            ui_yesno(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "write_chroot_vars" => {
+            write_chroot_vars(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_extra_custom_packages" => {
+            step_extra_custom_packages(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "main" => {
+            main_2(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "log_debug" => {
+            log_debug(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "detect_gpu_and_vm" => {
+            detect_gpu_and_vm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_hostname" => {
+            validate_hostname(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_encryption" => {
+            prompt_encryption(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "needs_scrolltext" => {
             needs_scrolltext(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "step_pacstrap" => {
-            step_pacstrap(__shell, args)?;
+        "prompt_dm" => {
+            prompt_dm(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "show_help" => {
-            show_help(__shell, args)?;
+        "prompt_network" => {
+            prompt_network(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "parse_args" => {
-            parse_args(__shell, args)?;
+        "_dry_run_validate_profile" => {
+            _dry_run_validate_profile(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "get_ram_mb" => {
+            get_ram_mb(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_user_and_host" => {
+            prompt_user_and_host(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_error" => {
+            on_error(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_locale_keymap_tz" => {
+            prompt_locale_keymap_tz(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_run_tui_no_out" => {
+            _run_tui_no_out(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_calc_total_pct" => {
+            dash_calc_total_pct(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "detect_boot_mode" => {
+            detect_boot_mode(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "build_locale_menu" => {
+            build_locale_menu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_extras" => {
+            prompt_extras(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_run_chroot" => {
+            step_run_chroot(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "write_chroot_script" => {
+            write_chroot_script(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_finalize" => {
+            step_finalize(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_build_frame" => {
+            dash_build_frame(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_gpu" => {
+            prompt_gpu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "recommended_dm_for_de" => {
+            recommended_dm_for_de(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "map_tty_keymap" => {
+            map_tty_keymap(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_passwords" => {
+            prompt_passwords(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "get_term_size" => {
+            get_term_size(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_error" => {
+            ui_error(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_finish_step" => {
+            dash_finish_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_menu" => {
+            ui_menu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_emit_log" => {
+            _emit_log(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_begin_step" => {
+            dash_begin_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_discover_disks" => {
+            _discover_disks(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_bootloader" => {
+            prompt_bootloader(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_desktop_and_dm" => {
+            prompt_desktop_and_dm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "extras_summary" => {
+            extras_summary(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_disk" => {
+            prompt_disk(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_interrupt" => {
+            on_interrupt(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_guided_step_applicable" => {
+            _guided_step_applicable(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "configuration_hub" => {
+            configuration_hub(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "strip_ansi" => {
+            strip_ansi(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "err" => {
+            err(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "section" => {
+            section(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "init_logging" => {
+            init_logging(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "run_dry_run" => {
+            run_dry_run(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_package_name" => {
+            validate_package_name(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "list_region_cities" => {
+            list_region_cities(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_stop" => {
+            dash_stop(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_audio" => {
+            prompt_audio(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_log_file_append" => {
+            _log_file_append(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "log" => {
+            log(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "get_partition_paths" => {
+            get_partition_paths(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_info" => {
+            ui_info(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_password_strength" => {
+            validate_password_strength(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         _ => {
@@ -22436,11 +22439,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     __shell.set_var("DEBUG_MODE", debug_mode.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
     }
     __shell.set_status(0);
@@ -22454,14 +22457,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     __shell.set_var("MAX_RETRIES", max_retries.clone());
     if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
         }
     }
     __shell.set_status(0);
@@ -22475,45 +22478,45 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     __shell.set_var("RETRY_DELAY", retry_delay.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("RETRY_DELAY") {
             retry_delay = __v.to_owned();
         }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut log_file = String::from("");
     __shell.set_var("LOG_FILE", log_file.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut tui_backend = String::from("");
     __shell.set_var("TUI_BACKEND", tui_backend.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
@@ -22521,22 +22524,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut ui_result = String::from("");
     __shell.set_var("UI_RESULT", ui_result.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
@@ -22547,25 +22550,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut cleanup_needed = String::from("0");
     __shell.set_var("CLEANUP_NEEDED", cleanup_needed.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
@@ -22576,25 +22576,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut in_cleanup = String::from("0");
     __shell.set_var("IN_CLEANUP", in_cleanup.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
@@ -22608,31 +22608,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut term_rows = String::from("24");
     __shell.set_var("TERM_ROWS", term_rows.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22643,31 +22643,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut term_cols = String::from("80");
     __shell.set_var("TERM_COLS", term_cols.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22678,37 +22678,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut ui_h = String::from("16");
     __shell.set_var("UI_H", ui_h.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22719,37 +22716,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut ui_w = String::from("72");
     __shell.set_var("UI_W", ui_w.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22760,43 +22757,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut ui_list_h = String::from("10");
     __shell.set_var("UI_LIST_H", ui_list_h.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22807,46 +22801,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_active = String::from("0");
     __shell.set_var("DASH_ACTIVE", dash_active.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22857,49 +22848,46 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_start_epoch = String::from("0");
     __shell.set_var("DASH_START_EPOCH", dash_start_epoch.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22910,49 +22898,49 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_W") {
             ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_cur_idx = String::from("0");
     __shell.set_var("DASH_CUR_IDX", dash_cur_idx.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
@@ -22963,58 +22951,55 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_W") {
             ui_w = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_cur_pct = String::from("0");
     __shell.set_var("DASH_CUR_PCT", dash_cur_pct.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
         }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
@@ -23022,58 +23007,61 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_W") {
             ui_w = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_cur_detail = String::from("");
     __shell.set_var("DASH_CUR_DETAIL", dash_cur_detail.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_RESULT") {
             ui_result = __v.to_owned();
         }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
@@ -23081,34 +23069,64 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_total_weight = String::from("100");
     __shell.set_var("DASH_TOTAL_WEIGHT", dash_total_weight.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23116,64 +23134,64 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dash_last_render = String::from("0");
     __shell.set_var("DASH_LAST_RENDER", dash_last_render.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23181,59 +23199,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
@@ -23268,8 +23271,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut boot_mode = String::from("uefi");
     __shell.set_var("BOOT_MODE", boot_mode.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23277,70 +23298,70 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut cpu_vendor = String::from("");
     __shell.set_var("CPU_VENDOR", cpu_vendor.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23348,73 +23369,76 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut cpu_ucode = String::from("");
     __shell.set_var("CPU_UCODE", cpu_ucode.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23422,76 +23446,79 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut gpu_hint = String::from("auto");
     __shell.set_var("GPU_HINT", gpu_hint.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23499,79 +23526,79 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut vm_hint = String::from("generic");
     __shell.set_var("VM_HINT", vm_hint.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23579,82 +23606,82 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut total_ram_mb = String::from("0");
     __shell.set_var("TOTAL_RAM_MB", total_ram_mb.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23662,85 +23689,85 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut disk_name = String::from("");
     __shell.set_var("DISK_NAME", disk_name.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23748,88 +23775,91 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut disk = String::from("");
     __shell.set_var("DISK", disk.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23837,91 +23867,94 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut boot_part = String::from("");
     __shell.set_var("BOOT_PART", boot_part.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -23929,94 +23962,97 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut root_part = String::from("");
     __shell.set_var("ROOT_PART", root_part.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24024,97 +24060,97 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut root_dev = String::from("");
     __shell.set_var("ROOT_DEV", root_dev.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24122,103 +24158,100 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut bios_part = String::from("");
     __shell.set_var("BIOS_PART", bios_part.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24226,136 +24259,97 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut bootloader = String::from("systemd-boot");
     __shell.set_var("BOOTLOADER", bootloader.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("GPU_HINT") {
             gpu_hint = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BOOTLOADER") {
             bootloader = __v.to_owned();
@@ -24363,106 +24357,106 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
             dash_start_epoch = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("RETRY_DELAY") {
             retry_delay = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut use_encryption = String::from("luks2");
     __shell.set_var("USE_ENCRYPTION", use_encryption.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("GPU_HINT") {
             gpu_hint = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BOOTLOADER") {
             bootloader = __v.to_owned();
@@ -24470,76 +24464,121 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
             dash_start_epoch = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("RETRY_DELAY") {
             retry_delay = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("MAX_RETRIES") {
             max_retries = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut fs_type = String::from("btrfs");
     __shell.set_var("FS_TYPE", fs_type.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24547,115 +24586,112 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut btrfs_use_subvols = String::from("yes");
     __shell.set_var("BTRFS_USE_SUBVOLS", btrfs_use_subvols.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24663,115 +24699,118 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut kernel = String::from("linux");
     __shell.set_var("KERNEL", kernel.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24779,121 +24818,121 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut user_name = String::from("");
     __shell.set_var("USER_NAME", user_name.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -24901,121 +24940,124 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut host_name = String::from("archlinux");
     __shell.set_var("HOST_NAME", host_name.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25023,127 +25065,127 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut user_shell = String::from("bash");
     __shell.set_var("USER_SHELL", user_shell.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25151,127 +25193,127 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut user_pass = String::from("");
     __shell.set_var("USER_PASS", user_pass.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25279,130 +25321,130 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut root_pass = String::from("");
     __shell.set_var("ROOT_PASS", root_pass.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25410,133 +25452,133 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut root_pass_mode = String::from("same");
     __shell.set_var("ROOT_PASS_MODE", root_pass_mode.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25544,136 +25586,136 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
-            root_pass_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut luks_pass = String::from("");
     __shell.set_var("LUKS_PASS", luks_pass.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_NAME") {
             user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25681,142 +25723,139 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
-            root_pass_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut luks_pass2 = String::from("");
     __shell.set_var("LUKS_PASS2", luks_pass2.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_SHELL") {
             user_shell = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25824,145 +25863,142 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
-            root_pass_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut real_luks_uuid = String::from("");
     __shell.set_var("REAL_LUKS_UUID", real_luks_uuid.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("USER_SHELL") {
             user_shell = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_H") {
             ui_h = __v.to_owned();
@@ -25970,136 +26006,139 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
-            root_pass_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TUI_BACKEND") {
             tui_backend = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DEBUG_MODE") {
             debug_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
             dash_last_render = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut root_uuid = String::from("");
     __shell.set_var("ROOT_UUID", root_uuid.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26107,148 +26146,151 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut tz_region = String::from("UTC");
     __shell.set_var("TZ_REGION", tz_region.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26256,151 +26298,154 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut timezone_city = String::from("");
     __shell.set_var("TIMEZONE_CITY", timezone_city.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26408,154 +26453,157 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut timezone = String::from("UTC");
     __shell.set_var("TIMEZONE", timezone.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26563,157 +26611,157 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut locale = String::from("en_US");
     __shell.set_var("LOCALE", locale.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26721,163 +26769,163 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut keyboard = String::from("us");
     __shell.set_var("KEYBOARD", keyboard.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -26885,163 +26933,166 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut de_choice = String::from("minimal");
     __shell.set_var("DE_CHOICE", de_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27049,166 +27100,166 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut dm_choice = String::from("none");
     __shell.set_var("DM_CHOICE", dm_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27216,172 +27267,169 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut auto_startx = String::from("no");
     __shell.set_var("AUTO_STARTX", auto_startx.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27389,172 +27437,172 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut gpu_choice = String::from("auto");
     __shell.set_var("GPU_CHOICE", gpu_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27562,175 +27610,178 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut vm_guest_type = String::from("generic");
     __shell.set_var("VM_GUEST_TYPE", vm_guest_type.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27738,178 +27789,178 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut audio_choice = String::from("pipewire");
     __shell.set_var("AUDIO_CHOICE", audio_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -27917,181 +27968,181 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut network_choice = String::from("networkmanager");
     __shell.set_var("NETWORK_CHOICE", network_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -28099,184 +28150,187 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut swap_choice = String::from("zram");
     __shell.set_var("SWAP_CHOICE", swap_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -28284,187 +28338,187 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut swap_size = String::from("auto");
     __shell.set_var("SWAP_SIZE", swap_size.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -28472,190 +28526,190 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut firewall_choice = String::from("ufw");
     __shell.set_var("FIREWALL_CHOICE", firewall_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -28663,193 +28717,196 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut aur_choice = String::from("none");
     __shell.set_var("AUR_CHOICE", aur_choice.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -28857,196 +28914,196 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_bluetooth = String::from("no");
     __shell.set_var("EXTRA_BLUETOOTH", extra_bluetooth.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -29054,199 +29111,199 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_flatpak = String::from("no");
     __shell.set_var("EXTRA_FLATPAK", extra_flatpak.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -29254,131 +29311,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
             extra_flatpak = __v.to_owned();
@@ -29386,70 +29338,175 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_cups = String::from("no");
     __shell.set_var("EXTRA_CUPS", extra_cups.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -29457,134 +29514,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
             extra_flatpak = __v.to_owned();
@@ -29592,70 +29544,175 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_snapper = String::from("no");
     __shell.set_var("EXTRA_SNAPPER", extra_snapper.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -29663,134 +29720,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
             extra_flatpak = __v.to_owned();
@@ -29798,73 +29750,178 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_reflector = String::from("yes");
     __shell.set_var("EXTRA_REFLECTOR", extra_reflector.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -29872,137 +29929,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
             extra_flatpak = __v.to_owned();
@@ -30010,73 +29959,181 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_multilib = String::from("no");
     __shell.set_var("EXTRA_MULTILIB", extra_multilib.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -30084,140 +30141,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DISK_NAME") {
             disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
             dash_cur_idx = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_VENDOR") {
             cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
             extra_flatpak = __v.to_owned();
@@ -30225,73 +30174,181 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("SWAP_SIZE") {
             swap_size = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let mut extra_custom_pkgs = String::from("");
     __shell.set_var("EXTRA_CUSTOM_PKGS", extra_custom_pkgs.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -30299,194 +30356,140 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
@@ -30514,23 +30517,77 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let red = String::from("\\033[0;31m");
     __shell.set_var("RED", red.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -30538,217 +30595,217 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let green = String::from("\\033[0;32m");
     __shell.set_var("GREEN", green.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -30756,217 +30813,217 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let yellow = String::from("\\033[1;33m");
     __shell.set_var("YELLOW", yellow.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -30974,217 +31031,217 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let cyan = String::from("\\033[0;36m");
     __shell.set_var("CYAN", cyan.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -31192,217 +31249,217 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let bold = String::from("\\033[1m");
     __shell.set_var("BOLD", bold.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -31410,217 +31467,217 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
     let nc = String::from("\\033[0m");
     __shell.set_var("NC", nc.clone());
     if __shell.has_namerefs() {
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -31628,194 +31685,140 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
     }
     __shell.set_status(0);
@@ -31849,23 +31852,77 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         __args.extend(args.iter().map(|s| (*s).to_owned()));
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         main_2(&mut __shell, &__arg_refs)?;
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("BIOS_PART") {
             bios_part = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
-            luks_pass2 = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("UI_LIST_H") {
-            ui_list_h = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
             root_pass_mode = __v.to_owned();
@@ -31873,194 +31930,140 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("ROOT_UUID") {
             root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LUKS_PASS") {
-            luks_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
-            dash_active = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
-            total_ram_mb = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DE_CHOICE") {
-            de_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
             network_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("LOG_FILE") {
-            log_file = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
-            firewall_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
-        }
         if let Some(__v) = __shell.get_var("IN_CLEANUP") {
             in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("FS_TYPE") {
-            fs_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DRY_RUN") {
             dry_run = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("TERM_COLS") {
             term_cols = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("CPU_UCODE") {
             cpu_ucode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
         }
         __shell.check_errexit()?;
     }
