@@ -26,7 +26,7 @@ fn init_logging(
         });
         __shell.set_var("LOG_FILE", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         __shell.push_stdin_from_redirects(&[bash2rust_runtime::RedirectSpec {
             fd: 1u32,
@@ -51,7 +51,7 @@ fn init_logging(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -72,7 +72,7 @@ fn init_logging(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         let __captured = __shell.pop_stdout_capture_raw();
         __shell.apply_captured_redirects(
@@ -116,7 +116,7 @@ fn strip_ansi(
         __shell.pipefail,
     )?;
     __shell.set_status(__rc);
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     Ok(())
 }
 fn _log_file_append(
@@ -128,11 +128,11 @@ fn _log_file_append(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("LOG_FILE", "script.sh", 180usize)
-            .as_str(),
-    ) {
+    if !(__shell
+        .get_var_or_env_checked("LOG_FILE", "script.sh", 180usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![
@@ -153,7 +153,7 @@ fn _log_file_append(
                     ),
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -178,7 +178,7 @@ fn _emit_log(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __shift_n: usize = (String::from("3")).trim().parse::<usize>().unwrap_or(1);
@@ -189,7 +189,7 @@ fn _emit_log(
         } else {
             __shell.set_status(1);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut msg = args.join(" ");
     __shell.set_status(0);
@@ -201,14 +201,13 @@ fn _emit_log(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _log_file_append(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 191usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 191usize)
+        .as_str())
+        == ("1")
+    {
         {
             let __args: Vec<String> = vec![format!(
                 "{} {}",
@@ -217,7 +216,7 @@ fn _emit_log(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_push_log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -227,12 +226,11 @@ fn _emit_log(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("stream", "script.sh", 196usize)
-            .as_str(),
-        "stderr",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("stream", "script.sh", 196usize)
+        .as_str())
+        == ("stderr")
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![
@@ -250,7 +248,7 @@ fn _emit_log(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -262,7 +260,7 @@ fn _emit_log(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -289,7 +287,7 @@ fn log(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _emit_log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -315,7 +313,7 @@ fn warn(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _emit_log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -341,7 +339,7 @@ fn err(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _emit_log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -354,12 +352,11 @@ fn log_debug(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DEBUG_MODE", "script.sh", 207usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DEBUG_MODE", "script.sh", 207usize)
+        .as_str())
+        == ("1")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("stdout"),
@@ -373,7 +370,7 @@ fn log_debug(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _emit_log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -393,20 +390,19 @@ fn section(
         let __args: Vec<String> = vec![String::from("")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _log_file_append(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!("== {} ==", args.join(" ").as_str())];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _log_file_append(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 214usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 214usize)
+        .as_str())
+        == ("1")
+    {
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
             __shell.set_status(__rc);
@@ -429,7 +425,7 @@ fn section(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -465,7 +461,7 @@ fn trim(
         let __args: Vec<String> = vec![String::from("%s"), s.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -486,7 +482,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("trq")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("uk", &__case_val) {
             {
@@ -494,7 +490,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("uk")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("de", &__case_val) {
             {
@@ -502,7 +498,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("de-latin1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("fr", &__case_val) {
             {
@@ -510,7 +506,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("fr")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("es", &__case_val) {
             {
@@ -518,7 +514,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("es")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("ru", &__case_val) {
             {
@@ -526,7 +522,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("ru")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("it", &__case_val) {
             {
@@ -534,7 +530,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("it")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("pl", &__case_val) {
             {
@@ -542,7 +538,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("pl2")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("colemak", &__case_val) {
             {
@@ -550,7 +546,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("colemak")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("dvorak", &__case_val) {
             {
@@ -558,7 +554,7 @@ fn map_tty_keymap(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("dvorak")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             {
@@ -569,7 +565,7 @@ fn map_tty_keymap(
                 ];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
     }
@@ -595,14 +591,14 @@ fn retry_cmd(
         } else {
             __shell.set_status(1);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("attempt=1"), String::from("code=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -622,7 +618,7 @@ fn retry_cmd(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log_debug(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __prog = args.first().copied().unwrap_or("").to_owned();
@@ -672,7 +668,7 @@ fn retry_cmd(
                 )];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 warn(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("sleep");
@@ -680,7 +676,7 @@ fn retry_cmd(
                     vec![__shell.get_var_or_env_checked("RETRY_DELAY", "script.sh", 255usize)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __val = ({
@@ -700,7 +696,7 @@ fn retry_cmd(
                 )];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 err(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __rc = (__shell.get_var_or_env_checked("code", "script.sh", 259usize))
@@ -747,11 +743,11 @@ fn dash_init(
         __shell.set_array("DASH_STEP_WEIGHTS", __arr_val);
     }
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 278usize)
-            .as_str(),
-    ) {
+    if !(__shell
+        .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 278usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __arr_val = vec![String::from("Installing Custom Extra Packages")];
             __shell.append_array("DASH_STEP_NAMES", __arr_val);
@@ -862,7 +858,7 @@ fn dash_init(
         };
         __shell.set_var("DASH_START_EPOCH", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = String::from("0");
         __shell.set_var("DASH_LAST_RENDER", __val);
@@ -883,7 +879,7 @@ fn dash_start(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_init(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("1");
@@ -950,7 +946,7 @@ fn dash_start(
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -963,12 +959,11 @@ fn dash_stop(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 313usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 313usize)
+        .as_str())
+        == ("1")
+    {
         {
             let __val = String::from("0");
             __shell.set_var("DASH_ACTIVE", __val);
@@ -1026,7 +1021,7 @@ fn dash_calc_total_pct(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_lt(
         __shell
@@ -1067,7 +1062,7 @@ fn dash_calc_total_pct(
             let __args: Vec<String> = vec![String::from("0")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -1082,7 +1077,7 @@ fn dash_calc_total_pct(
         let __args: Vec<String> = vec![String::from("done_w=0"), String::from("i")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let _ = {
@@ -1157,7 +1152,7 @@ fn dash_calc_total_pct(
         let __args: Vec<String> = vec![String::from("%d"), total.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1178,7 +1173,7 @@ fn dash_format_bar(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_lt(
         __shell
@@ -1243,7 +1238,7 @@ fn dash_format_bar(
         let __args: Vec<String> = vec![String::from("bar="), String::from("i")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let _ = {
@@ -1309,7 +1304,7 @@ fn dash_format_bar(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1332,7 +1327,7 @@ fn dash_format_elapsed(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -1343,7 +1338,7 @@ fn dash_format_elapsed(
         };
         __shell.set_var("now", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = ({
             let __res = __shell.eval_arith("now - DASH_START_EPOCH");
@@ -1394,7 +1389,7 @@ fn dash_format_elapsed(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1412,7 +1407,7 @@ fn dash_push_log(
         let __args: Vec<String> = vec![String::from("clean"), String::from("max_keep=4")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -1441,20 +1436,20 @@ fn dash_push_log(
         };
         __shell.set_var("clean", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
-        let __ao_ok = (bash2rust_runtime::test_str_empty(
-            __shell
-                .get_var_or_env_checked("clean", "script.sh", 373usize)
-                .as_str(),
-        )) && ({
-            {
-                let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
-                __shell.set_status(__rc);
-                return Ok(());
-            }
-            true
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("clean", "script.sh", 373usize)
+            .as_str())
+        .is_empty())
+            && ({
+                {
+                    let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
+                    __shell.set_status(__rc);
+                    return Ok(());
+                }
+                true
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
@@ -1494,7 +1489,7 @@ fn dash_push_log(
         let __args: Vec<String> = vec![String::from("0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1513,19 +1508,15 @@ fn dash_begin_step(
             format!("idx={}", args.get(0usize).copied().unwrap_or("")),
             format!(
                 "detail={}",
-                match __shell
-                    .get_var("2")
-                    .map(str::to_owned)
-                    .or_else(|| std::env::var("2").ok())
-                {
-                    Some(__v) if !__v.is_empty() => __v,
+                match args.get(1usize).copied() {
+                    Some(__v) if !__v.is_empty() => __v.to_owned(),
                     _ => String::from("Starting..."),
                 }
             ),
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = __shell.get_var_or_env_checked("idx", "script.sh", 1usize);
@@ -1556,7 +1547,7 @@ fn dash_begin_step(
         let __args: Vec<String> = vec![String::from("")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _log_file_append(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -1576,13 +1567,13 @@ fn dash_begin_step(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _log_file_append(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1601,19 +1592,15 @@ fn dash_update_step(
             format!("pct={}", args.get(0usize).copied().unwrap_or("")),
             format!(
                 "detail={}",
-                match __shell
-                    .get_var("2")
-                    .map(str::to_owned)
-                    .or_else(|| std::env::var("2").ok())
-                {
-                    Some(__v) if !__v.is_empty() => __v,
+                match args.get(1usize).copied() {
+                    Some(__v) if !__v.is_empty() => __v.to_owned(),
                     _ => __shell.get_var_or_env_checked("DASH_CUR_DETAIL", "script.sh", 1usize),
                 }
             ),
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_lt(
         __shell
@@ -1657,7 +1644,7 @@ fn dash_update_step(
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1676,19 +1663,15 @@ fn dash_finish_step(
             format!("idx={}", args.get(0usize).copied().unwrap_or("")),
             format!(
                 "detail={}",
-                match __shell
-                    .get_var("2")
-                    .map(str::to_owned)
-                    .or_else(|| std::env::var("2").ok())
-                {
-                    Some(__v) if !__v.is_empty() => __v,
+                match args.get(1usize).copied() {
+                    Some(__v) if !__v.is_empty() => __v.to_owned(),
                     _ => String::from("Complete"),
                 }
             ),
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = __shell.get_var_or_env_checked("idx", "script.sh", 1usize);
@@ -1719,7 +1702,7 @@ fn dash_finish_step(
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1741,15 +1724,7 @@ fn dash_fail_step(
         ))
     {
         {
-            let __idx = ({
-                __shell.set_var("idx", idx.clone());
-                let __res = __shell.eval_arith("$idx");
-                if let Some(__v) = __shell.get_var("idx") {
-                    idx = __v.to_owned();
-                }
-                __res
-            })
-            .max(0) as usize;
+            let __idx = (idx.trim().parse::<i64>().unwrap_or(0)).max(0) as usize;
             let __val = String::from("failed");
             __shell.set_array_elem("DASH_STEP_STATUS", __idx, __val);
         }
@@ -1761,7 +1736,7 @@ fn dash_fail_step(
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_render(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -1780,7 +1755,7 @@ fn dash_build_frame(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         get_term_size(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -1796,7 +1771,7 @@ fn dash_build_frame(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut max_line = ({
         __shell.set_var("l", l.clone());
@@ -1848,7 +1823,7 @@ fn dash_build_frame(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -1868,7 +1843,7 @@ fn dash_build_frame(
         };
         __shell.set_var("total_pct", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = {
             __shell.push_stdout_capture();
@@ -1884,7 +1859,7 @@ fn dash_build_frame(
         };
         __shell.set_var("elapsed", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = {
             __shell.push_stdout_capture();
@@ -1903,7 +1878,7 @@ fn dash_build_frame(
         };
         __shell.set_var("step_bar", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = {
             __shell.push_stdout_capture();
@@ -1922,13 +1897,13 @@ fn dash_build_frame(
         };
         __shell.set_var("total_bar", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sep="), String::from("i")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut sep_w = max_line.clone();
     __shell.set_status(0);
@@ -1987,7 +1962,7 @@ fn dash_build_frame(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("printf");
@@ -1998,7 +1973,7 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("printf");
@@ -2008,7 +1983,7 @@ fn dash_build_frame(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let _ = {
@@ -2016,14 +1991,14 @@ fn dash_build_frame(
             __res
         };
         while {
-            __shell.set_var("l", l.clone());
             __shell.set_var("total_steps", total_steps.clone());
+            __shell.set_var("l", l.clone());
             let __res = __shell.eval_arith("i < total_steps");
-            if let Some(__v) = __shell.get_var("l") {
-                l = __v.to_owned();
-            }
             if let Some(__v) = __shell.get_var("total_steps") {
                 total_steps = __v.to_owned();
+            }
+            if let Some(__v) = __shell.get_var("l") {
+                l = __v.to_owned();
             }
             __res
         } != 0
@@ -2042,7 +2017,7 @@ fn dash_build_frame(
                 ];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __case_val = __shell.get_var_or_env_checked("st", "script.sh", 448usize);
@@ -2071,12 +2046,11 @@ fn dash_build_frame(
                     .get_var_or_env_checked("rows", "script.sh", 453usize)
                     .as_str(),
                 "20",
-            )) && (bash2rust_runtime::test_str_eq(
-                __shell
-                    .get_var_or_env_checked("st", "script.sh", 453usize)
-                    .as_str(),
-                "pending",
-            )) {
+            )) && ((__shell
+                .get_var_or_env_checked("st", "script.sh", 453usize)
+                .as_str())
+                == ("pending"))
+            {
                 continue;
             } else {
                 __shell.set_status(0);
@@ -2107,7 +2081,7 @@ fn dash_build_frame(
                 }];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             let _ = {
                 let __res = __shell.eval_arith("i++");
@@ -2120,7 +2094,7 @@ fn dash_build_frame(
         let __args: Vec<String> = vec![String::from("\\n")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut step_title = format!(
         "  Step {}/{}: {}",
@@ -2147,7 +2121,7 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut step_bar_line = String::from("");
     __shell.set_status(0);
@@ -2162,7 +2136,7 @@ fn dash_build_frame(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("printf");
         let __args: Vec<String> = vec![String::from("%s\\n"), {
@@ -2172,7 +2146,7 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tot_title = String::from("  Total Installation Progress:");
     __shell.set_status(0);
@@ -2185,7 +2159,7 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tot_bar_line = String::from("");
     __shell.set_status(0);
@@ -2200,7 +2174,7 @@ fn dash_build_frame(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("printf");
         let __args: Vec<String> = vec![String::from("%s\\n"), {
@@ -2210,7 +2184,7 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tail_slots = String::from("4");
     __shell.set_status(0);
@@ -2247,26 +2221,12 @@ fn dash_build_frame(
         }];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut buf_len = __shell.array_len("DASH_LOG_BUF").to_string();
     __shell.set_status(0);
-    let mut start_i = ({
-        __shell.set_var("l", l.clone());
-        __shell.set_var("buf_len", buf_len.clone());
-        __shell.set_var("tail_slots", tail_slots.clone());
-        let __res = __shell.eval_arith("buf_len - tail_slots");
-        if let Some(__v) = __shell.get_var("l") {
-            l = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("buf_len") {
-            buf_len = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("tail_slots") {
-            tail_slots = __v.to_owned();
-        }
-        __res
-    })
+    let mut start_i = ((buf_len.trim().parse::<i64>().unwrap_or(0))
+        .wrapping_sub(tail_slots.trim().parse::<i64>().unwrap_or(0)))
     .to_string();
     __shell.set_status(0);
     if bash2rust_runtime::test_int_lt(start_i.as_str(), "0") {
@@ -2287,14 +2247,14 @@ fn dash_build_frame(
             __res
         };
         while {
-            __shell.set_var("buf_len", buf_len.clone());
             __shell.set_var("l", l.clone());
+            __shell.set_var("buf_len", buf_len.clone());
             let __res = __shell.eval_arith("i < buf_len");
-            if let Some(__v) = __shell.get_var("buf_len") {
-                buf_len = __v.to_owned();
-            }
             if let Some(__v) = __shell.get_var("l") {
                 l = __v.to_owned();
+            }
+            if let Some(__v) = __shell.get_var("buf_len") {
+                buf_len = __v.to_owned();
             }
             __res
         } != 0
@@ -2312,19 +2272,8 @@ fn dash_build_frame(
                 let __args: Vec<String> = vec![String::from("  %s\\n"), {
                     let __off = (String::from("0")).trim().parse::<i64>().unwrap_or(0);
                     let __len = Some(
-                        (({
-                            __shell.set_var("max_line", max_line.clone());
-                            __shell.set_var("l", l.clone());
-                            let __res = __shell.eval_arith("max_line - 2");
-                            if let Some(__v) = __shell.get_var("max_line") {
-                                max_line = __v.to_owned();
-                            }
-                            if let Some(__v) = __shell.get_var("l") {
-                                l = __v.to_owned();
-                            }
-                            __res
-                        })
-                        .to_string())
+                        (((max_line.trim().parse::<i64>().unwrap_or(0)).wrapping_sub(2i64))
+                            .to_string())
                         .trim()
                         .parse::<i64>()
                         .unwrap_or(0),
@@ -2333,17 +2282,9 @@ fn dash_build_frame(
                 }];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
-            printed = ({
-                __shell.set_var("printed", printed.clone());
-                let __res = __shell.eval_arith("printed + 1");
-                if let Some(__v) = __shell.get_var("printed") {
-                    printed = __v.to_owned();
-                }
-                __res
-            })
-            .to_string();
+            printed = ((printed.trim().parse::<i64>().unwrap_or(0)).wrapping_add(1i64)).to_string();
             __shell.set_status(0);
             let _ = {
                 let __res = __shell.eval_arith("i++");
@@ -2357,17 +2298,9 @@ fn dash_build_frame(
             let __args: Vec<String> = vec![String::from("\\n")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
-        printed = ({
-            __shell.set_var("printed", printed.clone());
-            let __res = __shell.eval_arith("printed + 1");
-            if let Some(__v) = __shell.get_var("printed") {
-                printed = __v.to_owned();
-            }
-            __res
-        })
-        .to_string();
+        printed = ((printed.trim().parse::<i64>().unwrap_or(0)).wrapping_add(1i64)).to_string();
         __shell.set_status(0);
     }
     Ok(())
@@ -2381,29 +2314,24 @@ fn dash_render(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    let mut force = match __shell
-        .get_var("1")
-        .map(str::to_owned)
-        .or_else(|| std::env::var("1").ok())
-    {
-        Some(__v) if !__v.is_empty() => __v,
+    let mut force = match args.get(0usize).copied() {
+        Some(__v) if !__v.is_empty() => __v.to_owned(),
         _ => String::from("0"),
     };
     __shell.set_status(0);
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 497usize)
-                .as_str(),
-            "1",
-        )) || ({
-            {
-                let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
-                __shell.set_status(__rc);
-                return Ok(());
-            }
-            true
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 497usize)
+            .as_str())
+            == ("1"))
+            || ({
+                {
+                    let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
+                    __shell.set_status(__rc);
+                    return Ok(());
+                }
+                true
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
@@ -2426,14 +2354,12 @@ fn dash_render(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
-    if (bash2rust_runtime::test_str_ne(force.as_str(), "1"))
-        && (bash2rust_runtime::test_str_eq(
-            now.as_str(),
-            __shell
+    __shell.check_errexit()?;
+    if ((force.as_str()) != ("1"))
+        && ((now.as_str())
+            == (__shell
                 .get_var_or_env_checked("DASH_LAST_RENDER", "script.sh", 502usize)
-                .as_str(),
-        ))
+                .as_str()))
     {
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -2519,7 +2445,7 @@ fn dash_render(
                 let __args: Vec<String> = vec![String::from("%s\\033[K\\n"), line.clone()];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
         __shell.set_stdin_override(None);
@@ -2529,7 +2455,7 @@ fn dash_render(
         let __args: Vec<String> = vec![String::from("\\033[J")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -2546,14 +2472,13 @@ fn do_cleanup(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_stop(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if (bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("DRY_RUN", "script.sh", 520usize)
-            .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_file("/mnt/root/.install_creds"))
+    if ((__shell
+        .get_var_or_env_checked("DRY_RUN", "script.sh", 520usize)
+        .as_str())
+        != ("1"))
+        && (std::path::Path::new("/mnt/root/.install_creds").is_file())
     {
         {
             let __ao_ok = ({
@@ -2585,22 +2510,19 @@ fn do_cleanup(
     } else {
         __shell.set_status(0);
     }
-    if ((bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DRY_RUN", "script.sh", 523usize)
-            .as_str(),
-        "1",
-    )) || (bash2rust_runtime::test_str_ne(
-        __shell
+    if (((__shell
+        .get_var_or_env_checked("DRY_RUN", "script.sh", 523usize)
+        .as_str())
+        == ("1"))
+        || ((__shell
             .get_var_or_env_checked("CLEANUP_NEEDED", "script.sh", 523usize)
-            .as_str(),
-        "1",
-    ))) || (bash2rust_runtime::test_str_eq(
-        __shell
+            .as_str())
+            != ("1")))
+        || ((__shell
             .get_var_or_env_checked("IN_CLEANUP", "script.sh", 523usize)
-            .as_str(),
-        "1",
-    )) {
+            .as_str())
+            == ("1"))
+    {
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
             __shell.set_status(__rc);
@@ -2620,7 +2542,7 @@ fn do_cleanup(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log_debug(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if ({
         let __prog = String::from("command");
@@ -2783,12 +2705,8 @@ fn on_error(
     __shell.set_positional_args(&args);
     let mut code = __shell.status_string();
     __shell.set_status(0);
-    let mut line = match __shell
-        .get_var("1")
-        .map(str::to_owned)
-        .or_else(|| std::env::var("1").ok())
-    {
-        Some(__v) if !__v.is_empty() => __v,
+    let mut line = match args.get(0usize).copied() {
+        Some(__v) if !__v.is_empty() => __v.to_owned(),
         _ => String::from("unknown"),
     };
     __shell.set_status(0);
@@ -2797,7 +2715,7 @@ fn on_error(
         let __args: Vec<String> = vec![String::from("-"), String::from("ERR")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __ao_ok = (bash2rust_runtime::test_int_eq(code.as_str(), "0"))
@@ -2813,23 +2731,23 @@ fn on_error(
     }
     let mut failed_step = String::from("");
     __shell.set_status(0);
-    if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 545usize)
-            .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_int_lt(
-        __shell
-            .get_var_or_env_checked("DASH_CUR_IDX", "script.sh", 545usize)
-            .as_str(),
-        (__shell.array_len("DASH_STEP_NAMES").to_string()).as_str(),
-    )) {
+    if ((__shell
+        .get_var_or_env_checked("DASH_ACTIVE", "script.sh", 545usize)
+        .as_str())
+        == ("1"))
+        && (bash2rust_runtime::test_int_lt(
+            __shell
+                .get_var_or_env_checked("DASH_CUR_IDX", "script.sh", 545usize)
+                .as_str(),
+            (__shell.array_len("DASH_STEP_NAMES").to_string()).as_str(),
+        ))
+    {
         {
             let __args: Vec<String> =
                 vec![__shell.get_var_or_env_checked("DASH_CUR_IDX", "script.sh", 546usize)];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_fail_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         failed_step = {
             let __idx = (__shell.get_var_or_env_checked("DASH_CUR_IDX", "script.sh", 1usize))
@@ -2846,7 +2764,7 @@ fn on_error(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_stop(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("printf");
@@ -2861,9 +2779,9 @@ fn on_error(
                 mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_non_empty(failed_step.as_str()) {
+    if !(failed_step.as_str()).is_empty() {
         {
             let __args: Vec<String> = vec![format!(
                 "Installation failed during '{}' at line {} (exit code: {}).",
@@ -2871,7 +2789,7 @@ fn on_error(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -2881,18 +2799,20 @@ fn on_error(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
-    if (bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("LOG_FILE", "script.sh", 558usize)
-            .as_str(),
-    )) && (bash2rust_runtime::test_file(
-        __shell
-            .get_var_or_env_checked("LOG_FILE", "script.sh", 558usize)
-            .as_str(),
-    )) {
+    if (!(__shell
+        .get_var_or_env_checked("LOG_FILE", "script.sh", 558usize)
+        .as_str())
+    .is_empty())
+        && (std::path::Path::new(
+            __shell
+                .get_var_or_env_checked("LOG_FILE", "script.sh", 558usize)
+                .as_str(),
+        )
+        .is_file())
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![
@@ -2911,7 +2831,7 @@ fn on_error(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -2960,43 +2880,40 @@ fn on_error(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
     }
-    if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("CLEANUP_NEEDED", "script.sh", 564usize)
-            .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_str_ne(
-        __shell
+    if ((__shell
+        .get_var_or_env_checked("CLEANUP_NEEDED", "script.sh", 564usize)
+        .as_str())
+        == ("1"))
+        && ((__shell
             .get_var_or_env_checked("DRY_RUN", "script.sh", 564usize)
-            .as_str(),
-        "1",
-    )) {
+            .as_str())
+            != ("1"))
+    {
         {
             let __args: Vec<String> = vec![String::from("Performing emergency cleanup...")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             do_cleanup(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("DRY_RUN", "script.sh", 568usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DRY_RUN", "script.sh", 568usize)
+        .as_str())
+        != ("1")
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![
@@ -3015,7 +2932,7 @@ fn on_error(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -3042,14 +2959,13 @@ fn on_exit(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_stop(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if (bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("DRY_RUN", "script.sh", 577usize)
-            .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_file("/mnt/root/.install_creds"))
+    if ((__shell
+        .get_var_or_env_checked("DRY_RUN", "script.sh", 577usize)
+        .as_str())
+        != ("1"))
+        && (std::path::Path::new("/mnt/root/.install_creds").is_file())
     {
         {
             let __ao_ok = ({
@@ -3082,24 +2998,20 @@ fn on_exit(
         __shell.set_status(0);
     }
     if ((bash2rust_runtime::test_int_ne(code.as_str(), "0"))
-        && (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("CLEANUP_NEEDED", "script.sh", 580usize)
-                .as_str(),
-            "1",
-        )))
-        && (bash2rust_runtime::test_str_ne(
-            __shell
-                .get_var_or_env_checked("DRY_RUN", "script.sh", 580usize)
-                .as_str(),
-            "1",
-        ))
+        && ((__shell
+            .get_var_or_env_checked("CLEANUP_NEEDED", "script.sh", 580usize)
+            .as_str())
+            == ("1")))
+        && ((__shell
+            .get_var_or_env_checked("DRY_RUN", "script.sh", 580usize)
+            .as_str())
+            != ("1"))
     {
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             do_cleanup(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -3125,13 +3037,13 @@ fn on_interrupt(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_stop(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("printf");
@@ -3146,26 +3058,26 @@ fn on_interrupt(
                 mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("Installation interrupted by user.")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         err(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         do_cleanup(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("exit");
         let __args: Vec<String> = vec![String::from("130")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -3201,7 +3113,7 @@ fn show_help(
                 mode: bash2rust_runtime::RedirectMode::InputBytes(__redir_buf_0.as_bytes()),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -3222,7 +3134,7 @@ fn show_version(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -3245,14 +3157,14 @@ fn parse_args(
                     let __args: Vec<String> = vec![];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     show_help(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("exit");
                     let __args: Vec<String> = vec![String::from("0")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else if bash2rust_runtime::pattern_match("-v", &__case_val)
                 || bash2rust_runtime::pattern_match("--version", &__case_val)
@@ -3261,14 +3173,14 @@ fn parse_args(
                     let __args: Vec<String> = vec![];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     show_version(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("exit");
                     let __args: Vec<String> = vec![String::from("0")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else if bash2rust_runtime::pattern_match("-n", &__case_val)
                 || bash2rust_runtime::pattern_match("--dry-run", &__case_val)
@@ -3296,7 +3208,7 @@ fn parse_args(
                     } else {
                         __shell.set_status(1);
                     }
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 break;
             } else {
@@ -3316,7 +3228,7 @@ fn parse_args(
                             mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                         }],
                     )?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __args: Vec<String> = vec![];
@@ -3335,14 +3247,14 @@ fn parse_args(
                             mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                         }],
                     )?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("exit");
                     let __args: Vec<String> = vec![String::from("2")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             }
         }
@@ -3355,20 +3267,18 @@ fn parse_args(
             } else {
                 __shell.set_status(1);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
-    if (bash2rust_runtime::test_str_ne(
-        __shell
+    if ((__shell
+        .get_var_or_env_checked("DEBUG_MODE", "script.sh", 687usize)
+        .as_str())
+        != ("0"))
+        && ((__shell
             .get_var_or_env_checked("DEBUG_MODE", "script.sh", 687usize)
-            .as_str(),
-        "0",
-    )) && (bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("DEBUG_MODE", "script.sh", 687usize)
-            .as_str(),
-        "1",
-    )) {
+            .as_str())
+            != ("1"))
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![
@@ -3385,14 +3295,14 @@ fn parse_args(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("2")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -3419,14 +3329,14 @@ fn parse_args(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("2")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -3453,14 +3363,14 @@ fn parse_args(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("2")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -3479,7 +3389,7 @@ fn validate_username(
     let mut u = String::from(args.get(0usize).copied().unwrap_or(""));
     __shell.set_status(0);
     {
-        let __ao_ok = (bash2rust_runtime::test_str_non_empty(u.as_str()))
+        let __ao_ok = (!(u.as_str()).is_empty())
             || ({
                 {
                     let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
@@ -3549,7 +3459,7 @@ fn validate_hostname(
     let mut h = String::from(args.get(0usize).copied().unwrap_or(""));
     __shell.set_status(0);
     {
-        let __ao_ok = ((bash2rust_runtime::test_str_non_empty(h.as_str()))
+        let __ao_ok = ((!(h.as_str()).is_empty())
             && (bash2rust_runtime::test_int_le((h.chars().count().to_string()).as_str(), "63")))
             && (bash2rust_runtime::test_regex_match(
                 h.as_str(),
@@ -3576,7 +3486,7 @@ fn validate_password_strength(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_ge(
         (__shell
@@ -3682,7 +3592,7 @@ fn validate_password_strength(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -3698,7 +3608,7 @@ fn validate_package_name(
     let mut pkg = String::from(args.get(0usize).copied().unwrap_or(""));
     __shell.set_status(0);
     {
-        let __ao_ok = ((bash2rust_runtime::test_str_non_empty(pkg.as_str()))
+        let __ao_ok = ((!(pkg.as_str()).is_empty())
             && (!(bash2rust_runtime::pattern_match("-*", pkg.as_str()))))
             && (bash2rust_runtime::test_regex_match(pkg.as_str(), "^[a-zA-Z0-9@._+-]+$"));
         __shell.set_status(if __ao_ok { 0 } else { 1 });
@@ -3742,7 +3652,7 @@ fn get_term_size(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if (!(bash2rust_runtime::test_regex_match(
         __shell
@@ -3795,7 +3705,7 @@ fn get_term_size(
             };
             __shell.set_var("rows", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else {
         __shell.set_status(0);
     }
@@ -3850,7 +3760,7 @@ fn get_term_size(
             };
             __shell.set_var("cols", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else {
         __shell.set_status(0);
     }
@@ -3921,32 +3831,28 @@ fn calc_ui_dims(
             format!("want_w={}", args.get(1usize).copied().unwrap_or("")),
             format!(
                 "want_list={}",
-                match __shell
-                    .get_var("3")
-                    .map(str::to_owned)
-                    .or_else(|| std::env::var("3").ok())
-                {
-                    Some(__v) if !__v.is_empty() => __v,
+                match args.get(2usize).copied() {
+                    Some(__v) if !__v.is_empty() => __v.to_owned(),
                     _ => String::from("0"),
                 }
             ),
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         get_term_size(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("max_h"), String::from("max_w")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_gt(
         __shell
@@ -4164,7 +4070,7 @@ fn needs_scrolltext(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut inner_w = ({
         let __res = __shell.eval_arith("box_w - 6");
@@ -4200,7 +4106,7 @@ fn needs_scrolltext(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = bash2rust_runtime::command_subst_raw(
@@ -4233,11 +4139,10 @@ fn needs_scrolltext(
                 };
                 __shell.ifs = __saved_ifs;
                 __bool_res
-            }) || (bash2rust_runtime::test_str_non_empty(
-                __shell
-                    .get_var_or_env_checked("line", "script.sh", 810usize)
-                    .as_str(),
-            ));
+            }) || (!(__shell
+                .get_var_or_env_checked("line", "script.sh", 810usize)
+                .as_str())
+            .is_empty());
             __loop_stdin = __shell.take_stdin_override();
             __c
         } {
@@ -4347,18 +4252,17 @@ fn _run_tui_no_out(
     __shell.set_positional_args(&args);
     let mut raw_rc = String::from("0");
     __shell.set_status(0);
-    if ((bash2rust_runtime::test_str_ne(
-        (match __shell
-            .get_var("UI_NO_TTY")
-            .map(str::to_owned)
-            .or_else(|| std::env::var("UI_NO_TTY").ok())
-        {
-            Some(__v) if !__v.is_empty() => __v,
-            _ => String::from("0"),
-        })
-        .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_readable("/dev/tty")))
+    if ((((match __shell
+        .get_var("UI_NO_TTY")
+        .map(str::to_owned)
+        .or_else(|| std::env::var("UI_NO_TTY").ok())
+    {
+        Some(__v) if !__v.is_empty() => __v,
+        _ => String::from("0"),
+    })
+    .as_str())
+        != ("1"))
+        && (bash2rust_runtime::test_readable("/dev/tty")))
         && (bash2rust_runtime::test_writable("/dev/tty"))
     {
         {
@@ -4439,7 +4343,7 @@ fn _run_tui_no_out(
         let __args: Vec<String> = vec![raw_rc.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _normalize_tui_rc(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -4462,20 +4366,19 @@ fn _run_tui_capture(
         let __args: Vec<String> = vec![String::from("out="), String::from("raw_rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if ((bash2rust_runtime::test_str_ne(
-        (match __shell
-            .get_var("UI_NO_TTY")
-            .map(str::to_owned)
-            .or_else(|| std::env::var("UI_NO_TTY").ok())
-        {
-            Some(__v) if !__v.is_empty() => __v,
-            _ => String::from("0"),
-        })
-        .as_str(),
-        "1",
-    )) && (bash2rust_runtime::test_readable("/dev/tty")))
+    if ((((match __shell
+        .get_var("UI_NO_TTY")
+        .map(str::to_owned)
+        .or_else(|| std::env::var("UI_NO_TTY").ok())
+    {
+        Some(__v) if !__v.is_empty() => __v,
+        _ => String::from("0"),
+    })
+    .as_str())
+        != ("1"))
+        && (bash2rust_runtime::test_readable("/dev/tty")))
         && (bash2rust_runtime::test_writable("/dev/tty"))
     {
         {
@@ -4621,7 +4524,7 @@ fn _run_tui_capture(
             vec![__shell.get_var_or_env_checked("raw_rc", "script.sh", 857usize)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         _normalize_tui_rc(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -4689,7 +4592,7 @@ fn init_tui(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if ({
             let __args: Vec<String> = vec![
@@ -4794,7 +4697,7 @@ fn init_tui(
                 )];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 warn(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __val = String::from("whiptail");
@@ -4883,14 +4786,14 @@ fn init_tui(
                 )];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 err(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("exit");
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
     } else if {
@@ -4926,29 +4829,28 @@ fn init_tui(
                 vec![String::from("Neither dialog nor whiptail is available.")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
-    if (bash2rust_runtime::test_str_ne(
-        (match __shell
-            .get_var("UI_NO_TTY")
-            .map(str::to_owned)
-            .or_else(|| std::env::var("UI_NO_TTY").ok())
-        {
-            Some(__v) if !__v.is_empty() => __v,
-            _ => String::from("0"),
-        })
-        .as_str(),
-        "1",
-    )) && ((!(bash2rust_runtime::test_readable("/dev/tty")))
-        || (!(bash2rust_runtime::test_writable("/dev/tty"))))
+    if (((match __shell
+        .get_var("UI_NO_TTY")
+        .map(str::to_owned)
+        .or_else(|| std::env::var("UI_NO_TTY").ok())
+    {
+        Some(__v) if !__v.is_empty() => __v,
+        _ => String::from("0"),
+    })
+    .as_str())
+        != ("1"))
+        && ((!(bash2rust_runtime::test_readable("/dev/tty")))
+            || (!(bash2rust_runtime::test_writable("/dev/tty"))))
     {
         {
             let __args: Vec<String> = vec![String::from(
@@ -4956,7 +4858,7 @@ fn init_tui(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![String::from(
@@ -4964,14 +4866,14 @@ fn init_tui(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -4983,7 +4885,7 @@ fn init_tui(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -5004,22 +4906,21 @@ fn ui_info(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("18"), String::from("74")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut rc = String::from("0");
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 897usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 897usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let __ao_ok = ({
                 let __args: Vec<String> = vec![
@@ -5061,7 +4962,7 @@ fn ui_info(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __args: Vec<String> = vec![
@@ -5143,22 +5044,21 @@ fn ui_error(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("14"), String::from("70")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut rc = String::from("0");
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 915usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 915usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let __ao_ok = ({
                 let __args: Vec<String> = vec![
@@ -5203,7 +5103,7 @@ fn ui_error(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __args: Vec<String> = vec![
@@ -5285,20 +5185,19 @@ fn ui_yesno(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("15"), String::from("70")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 933usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 933usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("dialog"),
@@ -5317,7 +5216,7 @@ fn ui_yesno(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_no_out(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -5332,7 +5231,7 @@ fn ui_yesno(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __args: Vec<String> = vec![
@@ -5365,7 +5264,7 @@ fn ui_yesno(
             __args.push(__shell.get_var_or_env_checked("UI_W", "script.sh", 942usize));
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_no_out(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -5384,7 +5283,7 @@ fn ui_confirm(
         __args.extend(args.iter().map(|s| (*s).to_owned()));
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         ui_yesno(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -5404,32 +5303,27 @@ fn ui_input(
             format!("msg={}", args.get(1usize).copied().unwrap_or("")),
             format!(
                 "default={}",
-                match __shell
-                    .get_var("3")
-                    .map(str::to_owned)
-                    .or_else(|| std::env::var("3").ok())
-                {
-                    Some(__v) if !__v.is_empty() => __v,
+                match args.get(2usize).copied() {
+                    Some(__v) if !__v.is_empty() => __v.to_owned(),
                     _ => String::from(""),
                 }
             ),
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("12"), String::from("70")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 954usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 954usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("dialog"),
@@ -5449,7 +5343,7 @@ fn ui_input(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -5471,7 +5365,7 @@ fn ui_input(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -5493,20 +5387,19 @@ fn ui_password(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("12"), String::from("70")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 969usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 969usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("dialog"),
@@ -5526,7 +5419,7 @@ fn ui_password(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -5547,7 +5440,7 @@ fn ui_password(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -5570,7 +5463,7 @@ fn ui_menu(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __shift_n: usize = (String::from("3")).trim().parse::<usize>().unwrap_or(1);
@@ -5581,26 +5474,26 @@ fn ui_menu(
         } else {
             __shell.set_status(1);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("21"), String::from("76"), String::from("12")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("-a"), String::from("extra_opts=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("default_item", "script.sh", 986usize)
-            .as_str(),
-    ) {
+    if !(__shell
+        .get_var_or_env_checked("default_item", "script.sh", 986usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __arr_val = vec![
                 String::from("--default-item"),
@@ -5612,12 +5505,11 @@ fn ui_menu(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 989usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 989usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let mut __args: Vec<String> = Vec::new();
             __args.push(String::from("dialog"));
@@ -5638,7 +5530,7 @@ fn ui_menu(
             __args.extend(args.iter().map(|s| (*s).to_owned()));
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -5661,7 +5553,7 @@ fn ui_menu(
             __args.extend(args.iter().map(|s| (*s).to_owned()));
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -5683,7 +5575,7 @@ fn ui_checklist(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __shift_n: usize = (String::from("2")).trim().parse::<usize>().unwrap_or(1);
@@ -5694,20 +5586,19 @@ fn ui_checklist(
         } else {
             __shell.set_status(1);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("20"), String::from("76"), String::from("10")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("TUI_BACKEND", "script.sh", 1007usize)
-            .as_str(),
-        "dialog",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("TUI_BACKEND", "script.sh", 1007usize)
+        .as_str())
+        == ("dialog")
+    {
         {
             let mut __args: Vec<String> = Vec::new();
             __args.push(String::from("dialog"));
@@ -5728,7 +5619,7 @@ fn ui_checklist(
             __args.extend(args.iter().map(|s| (*s).to_owned()));
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -5751,7 +5642,7 @@ fn ui_checklist(
             __args.extend(args.iter().map(|s| (*s).to_owned()));
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _run_tui_capture(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -5765,7 +5656,7 @@ fn detect_boot_mode(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    if bash2rust_runtime::test_file("/sys/firmware/efi/fw_platform_size") {
+    if std::path::Path::new("/sys/firmware/efi/fw_platform_size").is_file() {
         {
             let __val = String::from("uefi");
             __shell.set_var("BOOT_MODE", __val);
@@ -5893,7 +5784,7 @@ fn detect_cpu_microcode(
             };
             __shell.set_var("CPU_VENDOR", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         {
             let __val = {
                 __shell.push_stdout_capture();
@@ -5916,7 +5807,7 @@ fn detect_cpu_microcode(
             };
             __shell.set_var("CPU_VENDOR", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else if bash2rust_runtime::test_readable("/proc/cpuinfo") {
         {
             let __val = {
@@ -5962,7 +5853,7 @@ fn detect_cpu_microcode(
             };
             __shell.set_var("CPU_VENDOR", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         {
             let __val = {
                 __shell.push_stdout_capture();
@@ -5985,7 +5876,7 @@ fn detect_cpu_microcode(
             };
             __shell.set_var("CPU_VENDOR", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else {
         __shell.set_status(0);
     }
@@ -6093,7 +5984,7 @@ fn detect_gpu_and_vm(
             }
             __sub_out
         };
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         {
             let __case_val = virt.clone();
             if bash2rust_runtime::pattern_match("kvm", &__case_val)
@@ -6152,33 +6043,33 @@ fn detect_gpu_and_vm(
     } else {
         __shell.set_status(0);
     }
-    if (bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("GPU_HINT", "script.sh", 1064usize)
-            .as_str(),
-        "vm",
-    )) && ({
-        let __prog = String::from("command");
-        let __args: Vec<String> = vec![String::from("-v"), String::from("lspci")];
-        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-        __shell
-            .run_command_with_redirects(
-                &__prog,
-                &__arg_refs,
-                &[],
-                &[
-                    bash2rust_runtime::RedirectSpec {
-                        fd: 1u32,
-                        mode: bash2rust_runtime::RedirectMode::OutputTruncate("/dev/null"),
-                    },
-                    bash2rust_runtime::RedirectSpec {
-                        fd: 2u32,
-                        mode: bash2rust_runtime::RedirectMode::DupOutput { target_fd: 1u32 },
-                    },
-                ],
-            )
-            .is_ok_and(|__rc| __rc == 0)
-    }) {
+    if ((__shell
+        .get_var_or_env_checked("GPU_HINT", "script.sh", 1064usize)
+        .as_str())
+        != ("vm"))
+        && ({
+            let __prog = String::from("command");
+            let __args: Vec<String> = vec![String::from("-v"), String::from("lspci")];
+            let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+            __shell
+                .run_command_with_redirects(
+                    &__prog,
+                    &__arg_refs,
+                    &[],
+                    &[
+                        bash2rust_runtime::RedirectSpec {
+                            fd: 1u32,
+                            mode: bash2rust_runtime::RedirectMode::OutputTruncate("/dev/null"),
+                        },
+                        bash2rust_runtime::RedirectSpec {
+                            fd: 2u32,
+                            mode: bash2rust_runtime::RedirectMode::DupOutput { target_fd: 1u32 },
+                        },
+                    ],
+                )
+                .is_ok_and(|__rc| __rc == 0)
+        })
+    {
         vga = String::from("");
         __shell.set_status(0);
         vga = {
@@ -6241,7 +6132,7 @@ fn detect_gpu_and_vm(
             }
             __shell.pop_stdout_capture()
         };
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         {
             let __prog = String::from("local");
             let __args: Vec<String> = vec![
@@ -6251,7 +6142,7 @@ fn detect_gpu_and_vm(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let mut __pipe_buf: Vec<u8> = Vec::new();
@@ -6548,7 +6439,7 @@ fn get_ram_mb(
             }
             __sub_out
         };
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else if {
         let __prog = String::from("command");
         let __args: Vec<String> = vec![String::from("-v"), String::from("sysctl")];
@@ -6608,7 +6499,7 @@ fn get_ram_mb(
             }
             __sub_out
         };
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         if (bash2rust_runtime::test_regex_match(bytes.as_str(), "^[0-9]+$"))
             && (bash2rust_runtime::test_int_gt(bytes.as_str(), "0"))
         {
@@ -6639,7 +6530,7 @@ fn get_ram_mb(
         let __args: Vec<String> = vec![String::from("%d\\n"), ram_mb.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -6812,12 +6703,11 @@ fn get_partition_paths(
         __shell.set_var("ROOT_PART", __val);
     }
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 1123usize)
-            .as_str(),
-        "uefi",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 1123usize)
+        .as_str())
+        == ("uefi")
+    {
         {
             let __val = format!("{}{}1", disk, sep);
             __shell.set_var("BOOT_PART", __val);
@@ -6828,12 +6718,11 @@ fn get_partition_paths(
             __shell.set_var("ROOT_PART", __val);
         }
         __shell.set_status(0);
-    } else if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1126usize)
-            .as_str(),
-        "luks2",
-    ) {
+    } else if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1126usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __val = format!("{}{}1", disk, sep);
             __shell.set_var("BIOS_PART", __val);
@@ -6879,7 +6768,7 @@ fn check_disk_space(
             let __args: Vec<String> = vec![format!("Disk not found: {}", disk)];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
@@ -6926,7 +6815,7 @@ fn check_disk_space(
         }
         __sub_out
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     if (!(bash2rust_runtime::test_regex_match(sectors.as_str(), "^[0-9]+$")))
         || (bash2rust_runtime::test_int_eq(sectors.as_str(), "0"))
     {
@@ -6934,7 +6823,7 @@ fn check_disk_space(
             let __args: Vec<String> = vec![format!("Cannot read disk size: {}", disk)];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
@@ -6944,15 +6833,7 @@ fn check_disk_space(
     } else {
         __shell.set_status(0);
     }
-    let mut bytes = ({
-        __shell.set_var("sectors", sectors.clone());
-        let __res = __shell.eval_arith("sectors * 512");
-        if let Some(__v) = __shell.get_var("sectors") {
-            sectors = __v.to_owned();
-        }
-        __res
-    })
-    .to_string();
+    let mut bytes = ((sectors.trim().parse::<i64>().unwrap_or(0)).wrapping_mul(512i64)).to_string();
     __shell.set_status(0);
     let mut required = ({
         let __res = __shell.eval_arith("MIN_DISK_GB * 1024 * 1024 * 1024");
@@ -6979,7 +6860,7 @@ fn check_disk_space(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
@@ -6993,7 +6874,7 @@ fn check_disk_space(
         let __args: Vec<String> = vec![format!("Disk space: {}GB", gb)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -7010,7 +6891,7 @@ fn preflight_check(
         let __args: Vec<String> = vec![String::from("Pre-Flight Environment Check")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         section(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_ne(
         __shell
@@ -7022,7 +6903,7 @@ fn preflight_check(
             let __args: Vec<String> = vec![String::from("This script must be run as root.")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -7040,14 +6921,14 @@ fn preflight_check(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7085,14 +6966,14 @@ fn preflight_check(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7102,7 +6983,7 @@ fn preflight_check(
         let __args: Vec<String> = vec![String::from("-a"), String::from("missing_tools=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tool = String::from("");
     __shell.set_status(0);
@@ -7172,7 +7053,7 @@ fn preflight_check(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -7189,14 +7070,14 @@ fn preflight_check(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7205,47 +7086,49 @@ fn preflight_check(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         detect_boot_mode(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 1191usize)
-            .as_str(),
-        "uefi",
-    )) && ({
-        let __b = {
-            let __prog = String::from("command");
-            let __args: Vec<String> = vec![String::from("-v"), String::from("mkfs.fat")];
-            let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-            __shell
-                .run_command_with_redirects(
-                    &__prog,
-                    &__arg_refs,
-                    &[],
-                    &[
-                        bash2rust_runtime::RedirectSpec {
-                            fd: 1u32,
-                            mode: bash2rust_runtime::RedirectMode::OutputTruncate("/dev/null"),
-                        },
-                        bash2rust_runtime::RedirectSpec {
-                            fd: 2u32,
-                            mode: bash2rust_runtime::RedirectMode::DupOutput { target_fd: 1u32 },
-                        },
-                    ],
-                )
-                .is_ok_and(|__rc| __rc == 0)
-        };
-        let __neg = !__b;
-        __shell.set_status(if __neg { 0 } else { 1 });
-        __neg
-    }) {
+    if ((__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 1191usize)
+        .as_str())
+        == ("uefi"))
+        && ({
+            let __b = {
+                let __prog = String::from("command");
+                let __args: Vec<String> = vec![String::from("-v"), String::from("mkfs.fat")];
+                let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                __shell
+                    .run_command_with_redirects(
+                        &__prog,
+                        &__arg_refs,
+                        &[],
+                        &[
+                            bash2rust_runtime::RedirectSpec {
+                                fd: 1u32,
+                                mode: bash2rust_runtime::RedirectMode::OutputTruncate("/dev/null"),
+                            },
+                            bash2rust_runtime::RedirectSpec {
+                                fd: 2u32,
+                                mode: bash2rust_runtime::RedirectMode::DupOutput {
+                                    target_fd: 1u32,
+                                },
+                            },
+                        ],
+                    )
+                    .is_ok_and(|__rc| __rc == 0)
+            };
+            let __neg = !__b;
+            __shell.set_status(if __neg { 0 } else { 1 });
+            __neg
+        })
+    {
         {
             let __args: Vec<String> = vec![String::from(
                 "Missing required ISO tool: mkfs.fat (dosfstools)",
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -7262,14 +7145,14 @@ fn preflight_check(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7278,13 +7161,13 @@ fn preflight_check(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         detect_cpu_microcode(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         detect_gpu_and_vm(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -7301,7 +7184,7 @@ fn preflight_check(
         };
         __shell.set_var("TOTAL_RAM_MB", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __args: Vec<String> = vec![format!(
             "Root, Boot Mode ({}), and ISO tools verified",
@@ -7309,7 +7192,7 @@ fn preflight_check(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -7327,13 +7210,13 @@ fn preflight_check(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("Checking internet connectivity...")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __b = {
@@ -7354,7 +7237,7 @@ fn preflight_check(
             let __args: Vec<String> = vec![String::from("No internet connection detected.")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -7371,14 +7254,14 @@ fn preflight_check(
                     mode: bash2rust_runtime::RedirectMode::DupStdoutToStderr,
                 }],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7387,7 +7270,7 @@ fn preflight_check(
         let __args: Vec<String> = vec![String::from("Internet connectivity verified")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __prog = String::from("timedatectl");
@@ -7419,14 +7302,14 @@ fn preflight_check(
             let __args: Vec<String> = vec![String::from("NTP clock sync enabled")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
             let __args: Vec<String> = vec![String::from("NTP sync failed — continuing")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             warn(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -7632,23 +7515,32 @@ fn list_region_cities(
             }
             __shell.pop_stdout_capture()
         };
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_non_empty(cities.as_str()) {
+    if !(cities.as_str()).is_empty() {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![String::from("%s\\n"), cities.clone()];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
-    } else if bash2rust_runtime::test_dir((format!("/usr/share/zoneinfo/{}", region)).as_str()) {
+    } else if std::path::Path::new((format!("/usr/share/zoneinfo/{}", region)).as_str()).is_dir() {
         {
             let __saved_cwd = std::env::current_dir().ok();
             let __saved_vars = __shell.vars_snapshot();
-            {
+            let __saved_opts = (
+                __shell.errexit,
+                __shell.nounset,
+                __shell.pipefail,
+                __shell.ifs.clone(),
+            );
+            __shell.enter_subshell();
+            let __sub_res = (|| -> Result<(), Box<dyn std::error::Error>> {
+                let mut region = region.clone();
+                let mut cities = cities.clone();
                 {
                     let __ao_ok = ({
                         let __prog = String::from("cd");
@@ -7681,11 +7573,27 @@ fn list_region_cities(
                         .is_ok_and(|__rc| __rc == 0));
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
-            }
+                Ok(())
+            })();
+            __shell.leave_subshell();
             __shell.restore_vars(__saved_vars);
+            __shell.errexit = __saved_opts.0;
+            __shell.nounset = __saved_opts.1;
+            __shell.pipefail = __saved_opts.2;
+            __shell.ifs = __saved_opts.3;
             if let Some(__d) = __saved_cwd {
                 let _ = std::env::set_current_dir(__d);
             }
+            if let Err(__e) = __sub_res {
+                if let Some(bash2rust_runtime::RuntimeError::SubshellExit(__code)) =
+                    __e.downcast_ref::<bash2rust_runtime::RuntimeError>()
+                {
+                    __shell.set_status(*__code);
+                } else {
+                    return Err(__e);
+                }
+            }
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -7709,7 +7617,7 @@ fn recommended_dm_for_de(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("gdm")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("kde", &__case_val)
             || bash2rust_runtime::pattern_match("hyprland", &__case_val)
@@ -7719,7 +7627,7 @@ fn recommended_dm_for_de(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("sddm")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("xfce", &__case_val)
             || bash2rust_runtime::pattern_match("cinnamon", &__case_val)
@@ -7729,7 +7637,7 @@ fn recommended_dm_for_de(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("lightdm")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("sway", &__case_val)
             || bash2rust_runtime::pattern_match("i3wm", &__case_val)
@@ -7739,7 +7647,7 @@ fn recommended_dm_for_de(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("ly")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             {
@@ -7747,7 +7655,7 @@ fn recommended_dm_for_de(
                 let __args: Vec<String> = vec![String::from("%s"), String::from("none")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
     }
@@ -7796,98 +7704,91 @@ fn extras_summary(
     let mut items: Vec<String> = vec![];
     __shell.set_status(0);
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_BLUETOOTH", "script.sh", 1292usize)
-                .as_str(),
-            "yes",
-        )) && ({
-            items.extend([String::from("Bluetooth")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("EXTRA_BLUETOOTH", "script.sh", 1292usize)
+            .as_str())
+            == ("yes"))
+            && ({
+                items.extend([String::from("Bluetooth")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_FLATPAK", "script.sh", 1293usize)
-                .as_str(),
-            "yes",
-        )) && ({
-            items.extend([String::from("Flatpak")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("EXTRA_FLATPAK", "script.sh", 1293usize)
+            .as_str())
+            == ("yes"))
+            && ({
+                items.extend([String::from("Flatpak")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_CUPS", "script.sh", 1294usize)
-                .as_str(),
-            "yes",
-        )) && ({
-            items.extend([String::from("CUPS")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("EXTRA_CUPS", "script.sh", 1294usize)
+            .as_str())
+            == ("yes"))
+            && ({
+                items.extend([String::from("CUPS")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = ((bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_SNAPPER", "script.sh", 1295usize)
-                .as_str(),
-            "yes",
-        )) && (bash2rust_runtime::test_str_eq(
-            __shell
+        let __ao_ok = (((__shell
+            .get_var_or_env_checked("EXTRA_SNAPPER", "script.sh", 1295usize)
+            .as_str())
+            == ("yes"))
+            && ((__shell
                 .get_var_or_env_checked("FS_TYPE", "script.sh", 1295usize)
-                .as_str(),
-            "btrfs",
-        ))) && ({
-            items.extend([String::from("Snapper")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+                .as_str())
+                == ("btrfs")))
+            && ({
+                items.extend([String::from("Snapper")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_REFLECTOR", "script.sh", 1296usize)
-                .as_str(),
-            "yes",
-        )) && ({
-            items.extend([String::from("Reflector")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("EXTRA_REFLECTOR", "script.sh", 1296usize)
+            .as_str())
+            == ("yes"))
+            && ({
+                items.extend([String::from("Reflector")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("EXTRA_MULTILIB", "script.sh", 1297usize)
-                .as_str(),
-            "yes",
-        )) && ({
-            items.extend([String::from("Multilib")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = ((__shell
+            .get_var_or_env_checked("EXTRA_MULTILIB", "script.sh", 1297usize)
+            .as_str())
+            == ("yes"))
+            && ({
+                items.extend([String::from("Multilib")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     {
-        let __ao_ok = (bash2rust_runtime::test_str_non_empty(
-            __shell
-                .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 1298usize)
-                .as_str(),
-        )) && ({
-            items.extend([String::from("Custom")]);
-            __shell.set_status(0);
-            __shell.last_status == 0
-        });
+        let __ao_ok = (!(__shell
+            .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 1298usize)
+            .as_str())
+        .is_empty())
+            && ({
+                items.extend([String::from("Custom")]);
+                __shell.set_status(0);
+                __shell.last_status == 0
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     if bash2rust_runtime::test_int_eq((items.len().to_string()).as_str(), "0") {
@@ -7896,7 +7797,7 @@ fn extras_summary(
             let __args: Vec<String> = vec![String::from("%s"), String::from("None")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         ifs = String::from(", ");
@@ -7909,7 +7810,7 @@ fn extras_summary(
             __args.extend(__shell.get_array("items").iter().cloned());
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -7944,11 +7845,11 @@ fn build_package_list(
         __shell.set_array("PACKAGES", __arr_val);
     }
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("CPU_UCODE", "script.sh", 1313usize)
-            .as_str(),
-    ) {
+    if !(__shell
+        .get_var_or_env_checked("CPU_UCODE", "script.sh", 1313usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __arr_val = vec![__shell.get_var_or_env_checked("CPU_UCODE", "script.sh", 1usize)];
             __shell.append_array("PACKAGES", __arr_val);
@@ -7957,12 +7858,11 @@ fn build_package_list(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1317usize)
-            .as_str(),
-        "luks2",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1317usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __arr_val = vec![String::from("cryptsetup")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -7993,28 +7893,25 @@ fn build_package_list(
             __shell.set_status(0);
         }
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 1325usize)
-            .as_str(),
-        "uefi",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 1325usize)
+        .as_str())
+        == ("uefi")
+    {
         {
             let __arr_val = vec![String::from("dosfstools"), String::from("efibootmgr")];
             __shell.append_array("PACKAGES", __arr_val);
         }
         __shell.set_status(0);
-    } else if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1327usize)
-            .as_str(),
-        "luks2",
-    )) && (bash2rust_runtime::test_str_ne(
-        __shell
+    } else if ((__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 1327usize)
+        .as_str())
+        == ("luks2"))
+        && ((__shell
             .get_var_or_env_checked("FS_TYPE", "script.sh", 1327usize)
-            .as_str(),
-        "ext4",
-    )) {
+            .as_str())
+            != ("ext4"))
+    {
         {
             let __arr_val = vec![String::from("e2fsprogs")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8023,12 +7920,11 @@ fn build_package_list(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOTLOADER", "script.sh", 1331usize)
-            .as_str(),
-        "grub",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOTLOADER", "script.sh", 1331usize)
+        .as_str())
+        == ("grub")
+    {
         {
             let __arr_val = vec![String::from("grub")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8053,12 +7949,11 @@ fn build_package_list(
             __shell.set_status(0);
         }
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("NETWORK_CHOICE", "script.sh", 1340usize)
-            .as_str(),
-        "networkmanager",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("NETWORK_CHOICE", "script.sh", 1340usize)
+        .as_str())
+        == ("networkmanager")
+    {
         {
             let __arr_val = vec![String::from("networkmanager")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8089,12 +7984,11 @@ fn build_package_list(
             __shell.set_status(0);
         }
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("SWAP_CHOICE", "script.sh", 1353usize)
-            .as_str(),
-        "zram",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("SWAP_CHOICE", "script.sh", 1353usize)
+        .as_str())
+        == ("zram")
+    {
         {
             let __arr_val = vec![String::from("zram-generator")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8119,12 +8013,11 @@ fn build_package_list(
             __shell.set_status(0);
         }
     }
-    if bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("DE_CHOICE", "script.sh", 1362usize)
-            .as_str(),
-        "minimal",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DE_CHOICE", "script.sh", 1362usize)
+        .as_str())
+        != ("minimal")
+    {
         {
             let __arr_val = vec![String::from("noto-fonts")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8345,12 +8238,11 @@ fn build_package_list(
         } else if bash2rust_runtime::pattern_match("none", &__case_val) {
         }
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("EXTRA_BLUETOOTH", "script.sh", 1429usize)
-            .as_str(),
-        "yes",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("EXTRA_BLUETOOTH", "script.sh", 1429usize)
+        .as_str())
+        == ("yes")
+    {
         {
             let __arr_val = vec![String::from("bluez"), String::from("bluez-utils")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8359,12 +8251,11 @@ fn build_package_list(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("EXTRA_FLATPAK", "script.sh", 1432usize)
-            .as_str(),
-        "yes",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("EXTRA_FLATPAK", "script.sh", 1432usize)
+        .as_str())
+        == ("yes")
+    {
         {
             let __arr_val = vec![String::from("flatpak")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8373,12 +8264,11 @@ fn build_package_list(
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("EXTRA_CUPS", "script.sh", 1435usize)
-            .as_str(),
-        "yes",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("EXTRA_CUPS", "script.sh", 1435usize)
+        .as_str())
+        == ("yes")
+    {
         {
             let __arr_val = vec![String::from("cups"), String::from("cups-pdf")];
             __shell.append_array("PACKAGES", __arr_val);
@@ -8387,28 +8277,25 @@ fn build_package_list(
     } else {
         __shell.set_status(0);
     }
-    if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("EXTRA_SNAPPER", "script.sh", 1438usize)
-            .as_str(),
-        "yes",
-    )) && (bash2rust_runtime::test_str_eq(
-        __shell
+    if ((__shell
+        .get_var_or_env_checked("EXTRA_SNAPPER", "script.sh", 1438usize)
+        .as_str())
+        == ("yes"))
+        && ((__shell
             .get_var_or_env_checked("FS_TYPE", "script.sh", 1438usize)
-            .as_str(),
-        "btrfs",
-    )) {
+            .as_str())
+            == ("btrfs"))
+    {
         {
             let __arr_val = vec![String::from("snapper"), String::from("snap-pac")];
             __shell.append_array("PACKAGES", __arr_val);
         }
         __shell.set_status(0);
-        if bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("BOOTLOADER", "script.sh", 1440usize)
-                .as_str(),
-            "grub",
-        ) {
+        if (__shell
+            .get_var_or_env_checked("BOOTLOADER", "script.sh", 1440usize)
+            .as_str())
+            == ("grub")
+        {
             {
                 let __arr_val = vec![String::from("grub-btrfs"), String::from("inotify-tools")];
                 __shell.append_array("PACKAGES", __arr_val);
@@ -8489,7 +8376,7 @@ fn prompt_welcome(
                 let __args: Vec<String> = vec![String::from("0")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -8520,7 +8407,7 @@ fn _discover_disks(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = bash2rust_runtime::command_subst_raw(
@@ -8551,34 +8438,33 @@ fn _discover_disks(
             __c
         } {
             {
-                let __ao_ok = (bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("devname", "script.sh", 1482usize)
-                        .as_str(),
-                )) && ({
-                    let __prog = String::from("continue");
-                    let __args: Vec<String> = vec![];
-                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                    __shell
-                        .run_command(&__prog, &__arg_refs)
-                        .is_ok_and(|__rc| __rc == 0)
-                });
+                let __ao_ok = ((__shell
+                    .get_var_or_env_checked("devname", "script.sh", 1482usize)
+                    .as_str())
+                .is_empty())
+                    && ({
+                        let __prog = String::from("continue");
+                        let __args: Vec<String> = vec![];
+                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                        __shell
+                            .run_command(&__prog, &__arg_refs)
+                            .is_ok_and(|__rc| __rc == 0)
+                    });
                 __shell.set_status(if __ao_ok { 0 } else { 1 });
             }
             {
-                let __ao_ok = (bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("devtype", "script.sh", 1483usize)
-                        .as_str(),
-                    "disk",
-                )) && ({
-                    let __prog = String::from("continue");
-                    let __args: Vec<String> = vec![];
-                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                    __shell
-                        .run_command(&__prog, &__arg_refs)
-                        .is_ok_and(|__rc| __rc == 0)
-                });
+                let __ao_ok = ((__shell
+                    .get_var_or_env_checked("devtype", "script.sh", 1483usize)
+                    .as_str())
+                    != ("disk"))
+                    && ({
+                        let __prog = String::from("continue");
+                        let __args: Vec<String> = vec![];
+                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                        __shell
+                            .run_command(&__prog, &__arg_refs)
+                            .is_ok_and(|__rc| __rc == 0)
+                    });
                 __shell.set_status(if __ao_ok { 0 } else { 1 });
             }
             {
@@ -8654,7 +8540,7 @@ fn _discover_disks(
                 };
                 __shell.set_var("size", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             {
                 let __val = {
                     __shell.push_stdout_capture();
@@ -8712,7 +8598,7 @@ fn _discover_disks(
                 };
                 __shell.set_var("tran", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             {
                 let __val = {
                     __shell.push_stdout_capture();
@@ -8770,35 +8656,35 @@ fn _discover_disks(
                 };
                 __shell.set_var("model", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             {
-                let __ao_ok = (bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("size", "script.sh", 1489usize)
-                        .as_str(),
-                )) && ({
-                    let __prog = String::from("continue");
-                    let __args: Vec<String> = vec![];
-                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                    __shell
-                        .run_command(&__prog, &__arg_refs)
-                        .is_ok_and(|__rc| __rc == 0)
-                });
+                let __ao_ok = ((__shell
+                    .get_var_or_env_checked("size", "script.sh", 1489usize)
+                    .as_str())
+                .is_empty())
+                    && ({
+                        let __prog = String::from("continue");
+                        let __args: Vec<String> = vec![];
+                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                        __shell
+                            .run_command(&__prog, &__arg_refs)
+                            .is_ok_and(|__rc| __rc == 0)
+                    });
                 __shell.set_status(if __ao_ok { 0 } else { 1 });
             }
             {
-                let __ao_ok = (bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("model", "script.sh", 1490usize)
-                        .as_str(),
-                )) && ({
-                    {
-                        let __val = String::from("Unknown");
-                        __shell.set_var("model", __val);
-                    }
-                    __shell.set_status(0);
-                    __shell.last_status == 0
-                });
+                let __ao_ok = ((__shell
+                    .get_var_or_env_checked("model", "script.sh", 1490usize)
+                    .as_str())
+                .is_empty())
+                    && ({
+                        {
+                            let __val = String::from("Unknown");
+                            __shell.set_var("model", __val);
+                        }
+                        __shell.set_status(0);
+                        __shell.last_status == 0
+                    });
                 __shell.set_status(if __ao_ok { 0 } else { 1 });
             }
             {
@@ -8859,7 +8745,7 @@ fn _discover_disks(
                 ];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
         __shell.set_stdin_override(None);
@@ -8880,14 +8766,14 @@ fn prompt_disk(
         let __args: Vec<String> = vec![String::from("-a"), String::from("disk_list=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("devname"), String::from("desc")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = {
@@ -8931,18 +8817,18 @@ fn prompt_disk(
             __c
         } {
             {
-                let __ao_ok = (bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("devname", "script.sh", 1508usize)
-                        .as_str(),
-                )) && ({
-                    let __prog = String::from("continue");
-                    let __args: Vec<String> = vec![];
-                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                    __shell
-                        .run_command(&__prog, &__arg_refs)
-                        .is_ok_and(|__rc| __rc == 0)
-                });
+                let __ao_ok = ((__shell
+                    .get_var_or_env_checked("devname", "script.sh", 1508usize)
+                    .as_str())
+                .is_empty())
+                    && ({
+                        let __prog = String::from("continue");
+                        let __args: Vec<String> = vec![];
+                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                        __shell
+                            .run_command(&__prog, &__arg_refs)
+                            .is_ok_and(|__rc| __rc == 0)
+                    });
                 __shell.set_status(if __ao_ok { 0 } else { 1 });
             }
             {
@@ -9037,18 +8923,18 @@ fn prompt_disk(
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         {
-            let __ao_ok = (bash2rust_runtime::test_str_empty(
-                __shell
-                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1524usize)
-                    .as_str(),
-            )) && ({
-                {
-                    let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
-                    __shell.set_status(__rc);
-                    return Ok(());
-                }
-                true
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("UI_RESULT", "script.sh", 1524usize)
+                .as_str())
+            .is_empty())
+                && ({
+                    {
+                        let __rc = (String::from("1")).trim().parse::<i32>().unwrap_or(0);
+                        __shell.set_status(__rc);
+                        return Ok(());
+                    }
+                    true
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         if {
@@ -9081,7 +8967,7 @@ fn prompt_disk(
                     vec![__shell.get_var_or_env_checked("DISK", "script.sh", 1529usize)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 get_partition_paths(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -9141,7 +9027,7 @@ fn prompt_encryption(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -9152,7 +9038,7 @@ fn prompt_encryption(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -9222,12 +9108,11 @@ fn prompt_encryption(
                     __shell.set_var("st_enc", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("st_enc", "script.sh", 1552usize)
-                        .as_str(),
-                    "none",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("st_enc", "script.sh", 1552usize)
+                    .as_str())
+                    == ("none")
+                {
                     {
                         let __val = String::from("none");
                         __shell.set_var("USE_ENCRYPTION", __val);
@@ -9243,11 +9128,11 @@ fn prompt_encryption(
                         __shell.set_var("LUKS_PASS2", __val);
                     }
                     __shell.set_status(0);
-                    if bash2rust_runtime::test_str_non_empty(
-                        __shell
-                            .get_var_or_env_checked("DISK", "script.sh", 1556usize)
-                            .as_str(),
-                    ) {
+                    if !(__shell
+                        .get_var_or_env_checked("DISK", "script.sh", 1556usize)
+                        .as_str())
+                    .is_empty()
+                    {
                         {
                             let __args: Vec<String> = vec![__shell.get_var_or_env_checked(
                                 "DISK",
@@ -9256,7 +9141,7 @@ fn prompt_encryption(
                             )];
                             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                             get_partition_paths(__shell, &__arg_refs)?;
-                            __shell.check_errexit();
+                            __shell.check_errexit()?;
                         }
                     } else {
                         __shell.set_status(0);
@@ -9334,11 +9219,11 @@ fn prompt_encryption(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 1567usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1567usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -9440,14 +9325,13 @@ fn prompt_encryption(
                     __shell.set_var("st_p2", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("st_p1", "script.sh", 1581usize)
-                        .as_str(),
-                    __shell
+                if (__shell
+                    .get_var_or_env_checked("st_p1", "script.sh", 1581usize)
+                    .as_str())
+                    != (__shell
                         .get_var_or_env_checked("st_p2", "script.sh", 1581usize)
-                        .as_str(),
-                ) {
+                        .as_str())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -9495,7 +9379,7 @@ fn prompt_encryption(
                     };
                     __shell.set_var("strength", __val);
                 }
-                __shell.check_errexit();
+                __shell.check_errexit()?;
                 if bash2rust_runtime::test_int_lt(
                     __shell
                         .get_var_or_env_checked("strength", "script.sh", 1588usize)
@@ -9583,17 +9467,17 @@ fn prompt_encryption(
                     __shell.set_var("LUKS_PASS2", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_non_empty(
-                    __shell
-                        .get_var_or_env_checked("DISK", "script.sh", 1599usize)
-                        .as_str(),
-                ) {
+                if !(__shell
+                    .get_var_or_env_checked("DISK", "script.sh", 1599usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __args: Vec<String> =
                             vec![__shell.get_var_or_env_checked("DISK", "script.sh", 1599usize)];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         get_partition_paths(__shell, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                 } else {
                     __shell.set_status(0);
@@ -9624,7 +9508,7 @@ fn prompt_filesystem(
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -9693,7 +9577,7 @@ fn prompt_filesystem(
                 }
                 st_fs = __shell.get_var_or_env_checked("UI_RESULT", "script.sh", 1usize);
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_ne(st_fs.as_str(), "btrfs") {
+                if (st_fs.as_str()) != ("btrfs") {
                     {
                         let __val = st_fs.clone();
                         __shell.set_var("FS_TYPE", __val);
@@ -9808,12 +9692,11 @@ fn prompt_bootloader(
     let _ = &args;
     __shell.set_positional_args(&args);
     let mut rc = String::new();
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 1651usize)
-            .as_str(),
-        "bios",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 1651usize)
+        .as_str())
+        == ("bios")
+    {
         rc = String::from("0");
         __shell.set_status(0);
         {
@@ -10010,14 +9893,14 @@ fn prompt_user_and_host(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -10367,7 +10250,7 @@ fn prompt_passwords(
         let __args: Vec<String> = vec![String::from("st_upass="), String::from("st_rpass=")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -10378,7 +10261,7 @@ fn prompt_passwords(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -10448,11 +10331,11 @@ fn prompt_passwords(
                     });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 1752usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1752usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -10559,14 +10442,13 @@ fn prompt_passwords(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 1765usize)
-                        .as_str(),
-                    __shell
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1765usize)
+                    .as_str())
+                    != (__shell
                         .get_var_or_env_checked("st_upass", "script.sh", 1765usize)
-                        .as_str(),
-                ) {
+                        .as_str())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -10617,7 +10499,7 @@ fn prompt_passwords(
                     };
                     __shell.set_var("strength", __val);
                 }
-                __shell.check_errexit();
+                __shell.check_errexit()?;
                 if bash2rust_runtime::test_int_lt(
                     __shell
                         .get_var_or_env_checked("strength", "script.sh", 1772usize)
@@ -10830,11 +10712,11 @@ fn prompt_passwords(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 1802usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1802usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -10931,14 +10813,13 @@ fn prompt_passwords(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 1815usize)
-                        .as_str(),
-                    __shell
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 1815usize)
+                    .as_str())
+                    != (__shell
                         .get_var_or_env_checked("st_rpass", "script.sh", 1815usize)
-                        .as_str(),
-                ) {
+                        .as_str())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -11009,13 +10890,13 @@ fn prompt_locale_keymap_tz(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_locale_menu(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_keyboard_menu(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -11039,14 +10920,14 @@ fn prompt_locale_keymap_tz(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -11280,12 +11161,11 @@ fn prompt_locale_keymap_tz(
                     __shell.set_var("st_reg", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("st_reg", "script.sh", 1869usize)
-                        .as_str(),
-                    "UTC",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("st_reg", "script.sh", 1869usize)
+                    .as_str())
+                    == ("UTC")
+                {
                     {
                         let __val = __shell.get_var_or_env_checked("st_loc", "script.sh", 1usize);
                         __shell.set_var("LOCALE", __val);
@@ -11331,7 +11211,7 @@ fn prompt_locale_keymap_tz(
                         vec![String::from("-a"), String::from("tz_cities=()")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 city = String::from("");
                 __shell.set_status(0);
@@ -11379,7 +11259,7 @@ fn prompt_locale_keymap_tz(
                         __c
                     } {
                         {
-                            let __ao_ok = (bash2rust_runtime::test_str_empty(city.as_str()))
+                            let __ao_ok = ((city.as_str()).is_empty())
                                 && ({
                                     let __prog = String::from("continue");
                                     let __args: Vec<String> = vec![];
@@ -11616,12 +11496,11 @@ fn prompt_desktop(
         __shell.set_var("DE_CHOICE", __val);
     }
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DE_CHOICE", "script.sh", 1926usize)
-            .as_str(),
-        "minimal",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DE_CHOICE", "script.sh", 1926usize)
+        .as_str())
+        == ("minimal")
+    {
         {
             let __val = String::from("none");
             __shell.set_var("DM_CHOICE", __val);
@@ -11632,12 +11511,11 @@ fn prompt_desktop(
             __shell.set_var("AUTO_STARTX", __val);
         }
         __shell.set_status(0);
-    } else if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DM_CHOICE", "script.sh", 1929usize)
-            .as_str(),
-        "none",
-    ) {
+    } else if (__shell
+        .get_var_or_env_checked("DM_CHOICE", "script.sh", 1929usize)
+        .as_str())
+        == ("none")
+    {
         {
             let __val = {
                 __shell.push_stdout_capture();
@@ -11654,7 +11532,7 @@ fn prompt_desktop(
             };
             __shell.set_var("DM_CHOICE", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     } else {
         __shell.set_status(0);
     }
@@ -11674,12 +11552,11 @@ fn prompt_dm(
     let mut args: Vec<&str> = __raw_args.to_vec();
     let _ = &args;
     __shell.set_positional_args(&args);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DE_CHOICE", "script.sh", 1936usize)
-            .as_str(),
-        "minimal",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DE_CHOICE", "script.sh", 1936usize)
+        .as_str())
+        == ("minimal")
+    {
         {
             let __val = String::from("none");
             __shell.set_var("DM_CHOICE", __val);
@@ -11713,7 +11590,7 @@ fn prompt_dm(
         }
         __shell.pop_stdout_capture()
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     let mut st_dm = match __shell
         .get_var("DM_CHOICE")
         .map(str::to_owned)
@@ -11724,7 +11601,7 @@ fn prompt_dm(
     };
     __shell.set_status(0);
     {
-        let __ao_ok = (bash2rust_runtime::test_str_eq(st_dm.as_str(), "none"))
+        let __ao_ok = ((st_dm.as_str()) == ("none"))
             && ({
                 st_dm = rec_dm.clone();
                 __shell.set_status(0);
@@ -11737,7 +11614,7 @@ fn prompt_dm(
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -11814,12 +11691,11 @@ fn prompt_dm(
                 }
                 st_dm = __shell.get_var_or_env_checked("UI_RESULT", "script.sh", 1usize);
                 __shell.set_status(0);
-                if (bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("DE_CHOICE", "script.sh", 1962usize)
-                        .as_str(),
-                    "i3wm",
-                )) && (bash2rust_runtime::test_str_eq(st_dm.as_str(), "none"))
+                if ((__shell
+                    .get_var_or_env_checked("DE_CHOICE", "script.sh", 1962usize)
+                    .as_str())
+                    == ("i3wm"))
+                    && ((st_dm.as_str()) == ("none"))
                 {
                     {
                         let __val = String::from("1");
@@ -11946,14 +11822,14 @@ fn prompt_desktop_and_dm(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -12022,12 +11898,11 @@ fn prompt_desktop_and_dm(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("DE_CHOICE", "script.sh", 2004usize)
-                        .as_str(),
-                    "minimal",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("DE_CHOICE", "script.sh", 2004usize)
+                    .as_str())
+                    == ("minimal")
+                {
                     {
                         let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
                         __shell.set_status(__rc);
@@ -12146,14 +12021,14 @@ fn prompt_gpu(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -12238,12 +12113,11 @@ fn prompt_gpu(
                     __shell.set_var("st_gpu", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("st_gpu", "script.sh", 2047usize)
-                        .as_str(),
-                    "vm",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("st_gpu", "script.sh", 2047usize)
+                    .as_str())
+                    != ("vm")
+                {
                     {
                         let __val = __shell.get_var_or_env_checked("st_gpu", "script.sh", 1usize);
                         __shell.set_var("GPU_CHOICE", __val);
@@ -12498,14 +12372,14 @@ fn prompt_swap(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -12584,12 +12458,11 @@ fn prompt_swap(
                     __shell.set_var("st_swap", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("st_swap", "script.sh", 2109usize)
-                        .as_str(),
-                    "none",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("st_swap", "script.sh", 2109usize)
+                    .as_str())
+                    == ("none")
+                {
                     {
                         let __val = String::from("none");
                         __shell.set_var("SWAP_CHOICE", __val);
@@ -12614,12 +12487,11 @@ fn prompt_swap(
                     __shell.set_var("rc", __val);
                 }
                 __shell.set_status(0);
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("st_swap", "script.sh", 2117usize)
-                        .as_str(),
-                    "zram",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("st_swap", "script.sh", 2117usize)
+                    .as_str())
+                    == ("zram")
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -12655,13 +12527,12 @@ fn prompt_swap(
                     ssz_default = __shell.get_var_or_env_checked("st_size", "script.sh", 1usize);
                     __shell.set_status(0);
                     {
-                        let __ao_ok =
-                            (bash2rust_runtime::test_str_eq(ssz_default.as_str(), "auto"))
-                                && ({
-                                    ssz_default = String::from("4096");
-                                    __shell.set_status(0);
-                                    __shell.last_status == 0
-                                });
+                        let __ao_ok = ((ssz_default.as_str()) == ("auto"))
+                            && ({
+                                ssz_default = String::from("4096");
+                                __shell.set_status(0);
+                                __shell.last_status == 0
+                            });
                         __shell.set_status(if __ao_ok { 0 } else { 1 });
                     }
                     {
@@ -12899,7 +12770,7 @@ fn prompt_extras(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -12919,7 +12790,7 @@ fn prompt_extras(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut st_custom = __shell.get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 1usize);
     __shell.set_status(0);
@@ -12928,7 +12799,7 @@ fn prompt_extras(
         let __args: Vec<String> = vec![String::from("sub=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while {
         let __prog = String::from("true");
@@ -12953,107 +12824,100 @@ fn prompt_extras(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
-                    let __ao_ok = (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_bt", "script.sh", 2176usize)
-                            .as_str(),
-                        "yes",
-                    )) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_bt", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                    let __ao_ok = ((__shell
+                        .get_var_or_env_checked("st_bt", "script.sh", 2176usize)
+                        .as_str())
+                        == ("yes"))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_bt", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
-                    let __ao_ok = (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_fp", "script.sh", 2177usize)
-                            .as_str(),
-                        "yes",
-                    )) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_fp", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                    let __ao_ok = ((__shell
+                        .get_var_or_env_checked("st_fp", "script.sh", 2177usize)
+                        .as_str())
+                        == ("yes"))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_fp", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
-                    let __ao_ok = (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_cups", "script.sh", 2178usize)
-                            .as_str(),
-                        "yes",
-                    )) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_cups", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                    let __ao_ok = ((__shell
+                        .get_var_or_env_checked("st_cups", "script.sh", 2178usize)
+                        .as_str())
+                        == ("yes"))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_cups", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
-                    let __ao_ok = ((bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_snap", "script.sh", 2179usize)
-                            .as_str(),
-                        "yes",
-                    )) && (bash2rust_runtime::test_str_eq(
-                        __shell
+                    let __ao_ok = (((__shell
+                        .get_var_or_env_checked("st_snap", "script.sh", 2179usize)
+                        .as_str())
+                        == ("yes"))
+                        && ((__shell
                             .get_var_or_env_checked("FS_TYPE", "script.sh", 2179usize)
-                            .as_str(),
-                        "btrfs",
-                    ))) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_snap", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                            .as_str())
+                            == ("btrfs")))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_snap", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
-                    let __ao_ok = (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_ref", "script.sh", 2180usize)
-                            .as_str(),
-                        "yes",
-                    )) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_ref", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                    let __ao_ok = ((__shell
+                        .get_var_or_env_checked("st_ref", "script.sh", 2180usize)
+                        .as_str())
+                        == ("yes"))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_ref", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
-                    let __ao_ok = (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("st_multi", "script.sh", 2181usize)
-                            .as_str(),
-                        "yes",
-                    )) && ({
-                        {
-                            let __val = String::from("on");
-                            __shell.set_var("f_multi", __val);
-                        }
-                        __shell.set_status(0);
-                        __shell.last_status == 0
-                    });
+                    let __ao_ok = ((__shell
+                        .get_var_or_env_checked("st_multi", "script.sh", 2181usize)
+                        .as_str())
+                        == ("yes"))
+                        && ({
+                            {
+                                let __val = String::from("on");
+                                __shell.set_var("f_multi", __val);
+                            }
+                            __shell.set_status(0);
+                            __shell.last_status == 0
+                        });
                     __shell.set_status(if __ao_ok { 0 } else { 1 });
                 }
                 {
@@ -13070,14 +12934,13 @@ fn prompt_extras(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
-                if bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("FS_TYPE", "script.sh", 2190usize)
-                        .as_str(),
-                    "btrfs",
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("FS_TYPE", "script.sh", 2190usize)
+                    .as_str())
+                    == ("btrfs")
+                {
                     {
                         let __arr_val = vec![
                             String::from("snapper"),
@@ -13337,21 +13200,21 @@ fn prompt_extras(
                     }
                     __shell.pop_stdout_capture()
                 };
-                __shell.check_errexit();
-                if bash2rust_runtime::test_str_non_empty(cleaned.as_str()) {
+                __shell.check_errexit()?;
+                if !(cleaned.as_str()).is_empty() {
                     {
                         let __prog = String::from("local");
                         let __args: Vec<String> = vec![String::from("-a"), String::from("pkgs=()")];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                     {
                         let __prog = String::from("local");
                         let __args: Vec<String> = vec![String::from("p"), String::from("bad=")];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                     {
                         let __prog = String::from("read");
@@ -13369,7 +13232,7 @@ fn prompt_extras(
                                 ),
                             }],
                         )?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                     {
                         let mut __items: Vec<String> = Vec::new();
@@ -13401,11 +13264,11 @@ fn prompt_extras(
                             }
                         }
                     }
-                    if bash2rust_runtime::test_str_non_empty(
-                        __shell
-                            .get_var_or_env_checked("bad", "script.sh", 2234usize)
-                            .as_str(),
-                    ) {
+                    if !(__shell
+                        .get_var_or_env_checked("bad", "script.sh", 2234usize)
+                        .as_str())
+                    .is_empty()
+                    {
                         {
                             let __ao_ok = ({
                                 let __args: Vec<String> = vec![
@@ -13497,22 +13360,18 @@ fn _guided_step_applicable(
         let __case_val = String::from(args.get(0usize).copied().unwrap_or(""));
         if bash2rust_runtime::pattern_match("3", &__case_val) {
             {
-                let __t = bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("BOOT_MODE", "script.sh", 2260usize)
-                        .as_str(),
-                    "uefi",
-                );
+                let __t = (__shell
+                    .get_var_or_env_checked("BOOT_MODE", "script.sh", 2260usize)
+                    .as_str())
+                    == ("uefi");
                 __shell.set_status(if __t { 0 } else { 1 });
             }
         } else if bash2rust_runtime::pattern_match("9", &__case_val) {
             {
-                let __t = bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("DE_CHOICE", "script.sh", 2261usize)
-                        .as_str(),
-                    "minimal",
-                );
+                let __t = (__shell
+                    .get_var_or_env_checked("DE_CHOICE", "script.sh", 2261usize)
+                    .as_str())
+                    != ("minimal");
                 __shell.set_status(if __t { 0 } else { 1 });
             }
         } else {
@@ -13542,7 +13401,7 @@ fn run_guided_setup(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut total_steps = __shell.array_len("step_funcs").to_string();
     __shell.set_status(0);
@@ -13551,7 +13410,7 @@ fn run_guided_setup(
         let __args: Vec<String> = vec![String::from("step=0"), String::from("rc=0")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     while (bash2rust_runtime::test_int_ge(
         __shell
@@ -13608,9 +13467,13 @@ fn run_guided_setup(
                 };
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                __shell
-                    .run_command(&__prog, &__arg_refs)
-                    .is_ok_and(|__rc| __rc == 0)
+                if let Some(__rc) = __dispatch_dynamic_fn(__shell, &__prog, &__arg_refs)? {
+                    __rc == 0
+                } else {
+                    __shell
+                        .run_command(&__prog, &__arg_refs)
+                        .is_ok_and(|__rc| __rc == 0)
+                }
             }) || ({
                 {
                     let __val = __shell.status_string();
@@ -13801,15 +13664,15 @@ fn configuration_hub(
         __shell.set_status(0);
         pass_disp = String::from("<REQUIRED: set passwords>");
         __shell.set_status(0);
-        if (bash2rust_runtime::test_str_non_empty(
-            __shell
-                .get_var_or_env_checked("USER_PASS", "script.sh", 2327usize)
-                .as_str(),
-        )) && (bash2rust_runtime::test_str_non_empty(
-            __shell
+        if (!(__shell
+            .get_var_or_env_checked("USER_PASS", "script.sh", 2327usize)
+            .as_str())
+        .is_empty())
+            && (!(__shell
                 .get_var_or_env_checked("ROOT_PASS", "script.sh", 2327usize)
-                .as_str(),
-        )) {
+                .as_str())
+            .is_empty())
+        {
             pass_disp = format!(
                 "Set (root: {})",
                 __shell.get_var_or_env_checked("ROOT_PASS_MODE", "script.sh", 1usize)
@@ -13820,17 +13683,16 @@ fn configuration_hub(
         }
         enc_disp = String::from("None");
         __shell.set_status(0);
-        if bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2331usize)
-                .as_str(),
-            "luks2",
-        ) {
-            if bash2rust_runtime::test_str_non_empty(
-                __shell
-                    .get_var_or_env_checked("LUKS_PASS", "script.sh", 2332usize)
-                    .as_str(),
-            ) {
+        if (__shell
+            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2331usize)
+            .as_str())
+            == ("luks2")
+        {
+            if !(__shell
+                .get_var_or_env_checked("LUKS_PASS", "script.sh", 2332usize)
+                .as_str())
+            .is_empty()
+            {
                 enc_disp = String::from("LUKS2 (passphrase set)");
                 __shell.set_status(0);
             } else {
@@ -13842,12 +13704,11 @@ fn configuration_hub(
         }
         fs_disp = __shell.get_var_or_env_checked("FS_TYPE", "script.sh", 1usize);
         __shell.set_status(0);
-        if bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("FS_TYPE", "script.sh", 2339usize)
-                .as_str(),
-            "btrfs",
-        ) {
+        if (__shell
+            .get_var_or_env_checked("FS_TYPE", "script.sh", 2339usize)
+            .as_str())
+            == ("btrfs")
+        {
             fs_disp = format!(
                 "btrfs (subvols: {})",
                 __shell.get_var_or_env_checked("BTRFS_USE_SUBVOLS", "script.sh", 1usize)
@@ -13859,38 +13720,36 @@ fn configuration_hub(
         gpu_disp = __shell.get_var_or_env_checked("GPU_CHOICE", "script.sh", 1usize);
         __shell.set_status(0);
         {
-            let __ao_ok = (bash2rust_runtime::test_str_eq(
-                __shell
-                    .get_var_or_env_checked("GPU_CHOICE", "script.sh", 2343usize)
-                    .as_str(),
-                "vm",
-            )) && ({
-                gpu_disp = format!(
-                    "vm ({})",
-                    __shell.get_var_or_env_checked("VM_GUEST_TYPE", "script.sh", 1usize)
-                );
-                __shell.set_status(0);
-                __shell.last_status == 0
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("GPU_CHOICE", "script.sh", 2343usize)
+                .as_str())
+                == ("vm"))
+                && ({
+                    gpu_disp = format!(
+                        "vm ({})",
+                        __shell.get_var_or_env_checked("VM_GUEST_TYPE", "script.sh", 1usize)
+                    );
+                    __shell.set_status(0);
+                    __shell.last_status == 0
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         swap_disp = __shell.get_var_or_env_checked("SWAP_CHOICE", "script.sh", 1usize);
         __shell.set_status(0);
         {
-            let __ao_ok = (bash2rust_runtime::test_str_ne(
-                __shell
-                    .get_var_or_env_checked("SWAP_CHOICE", "script.sh", 2345usize)
-                    .as_str(),
-                "none",
-            )) && ({
-                swap_disp = format!(
-                    "{} ({})",
-                    __shell.get_var_or_env_checked("SWAP_CHOICE", "script.sh", 1usize),
-                    __shell.get_var_or_env_checked("SWAP_SIZE", "script.sh", 1usize)
-                );
-                __shell.set_status(0);
-                __shell.last_status == 0
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("SWAP_CHOICE", "script.sh", 2345usize)
+                .as_str())
+                != ("none"))
+                && ({
+                    swap_disp = format!(
+                        "{} ({})",
+                        __shell.get_var_or_env_checked("SWAP_CHOICE", "script.sh", 1usize),
+                        __shell.get_var_or_env_checked("SWAP_SIZE", "script.sh", 1usize)
+                    );
+                    __shell.set_status(0);
+                    __shell.last_status == 0
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         rc = String::from("0");
@@ -14020,7 +13879,7 @@ fn configuration_hub(
                     let __args: Vec<String> = vec![String::from("0")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -14408,17 +14267,17 @@ fn configuration_hub(
                         let __args: Vec<String> = vec![String::from("0")];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                 } else {
                     __shell.set_status(0);
                 }
             } else if bash2rust_runtime::pattern_match("install", &__case_val) {
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("DISK", "script.sh", 2414usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("DISK", "script.sh", 2414usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -14447,11 +14306,11 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("USER_NAME", "script.sh", 2419usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("USER_NAME", "script.sh", 2419usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -14480,15 +14339,15 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if (bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("USER_PASS", "script.sh", 2424usize)
-                        .as_str(),
-                )) || (bash2rust_runtime::test_str_empty(
-                    __shell
+                if ((__shell
+                    .get_var_or_env_checked("USER_PASS", "script.sh", 2424usize)
+                    .as_str())
+                .is_empty())
+                    || ((__shell
                         .get_var_or_env_checked("ROOT_PASS", "script.sh", 2424usize)
-                        .as_str(),
-                )) {
+                        .as_str())
+                    .is_empty())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -14536,11 +14395,11 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_empty(
-                    __shell
-                        .get_var_or_env_checked("HOST_NAME", "script.sh", 2431usize)
-                        .as_str(),
-                ) {
+                if (__shell
+                    .get_var_or_env_checked("HOST_NAME", "script.sh", 2431usize)
+                    .as_str())
+                .is_empty()
+                {
                     {
                         let __val = String::from("archlinux");
                         __shell.set_var("HOST_NAME", __val);
@@ -14549,16 +14408,15 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if (bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2434usize)
-                        .as_str(),
-                    "luks2",
-                )) && (bash2rust_runtime::test_str_empty(
-                    __shell
+                if ((__shell
+                    .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2434usize)
+                    .as_str())
+                    == ("luks2"))
+                    && ((__shell
                         .get_var_or_env_checked("LUKS_PASS", "script.sh", 2434usize)
-                        .as_str(),
-                )) {
+                        .as_str())
+                    .is_empty())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -14603,16 +14461,15 @@ fn configuration_hub(
                     } else {
                         __shell.set_status(0);
                     }
-                    if (bash2rust_runtime::test_str_eq(
-                        __shell
-                            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2440usize)
-                            .as_str(),
-                        "luks2",
-                    )) && (bash2rust_runtime::test_str_empty(
-                        __shell
+                    if ((__shell
+                        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2440usize)
+                        .as_str())
+                        == ("luks2"))
+                        && ((__shell
                             .get_var_or_env_checked("LUKS_PASS", "script.sh", 2440usize)
-                            .as_str(),
-                    )) {
+                            .as_str())
+                        .is_empty())
+                    {
                         last_item = String::from("encryption");
                         __shell.set_status(0);
                         continue;
@@ -14622,17 +14479,15 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if (bash2rust_runtime::test_str_eq(
-                    __shell
-                        .get_var_or_env_checked("BOOT_MODE", "script.sh", 2445usize)
-                        .as_str(),
-                    "bios",
-                )) && (bash2rust_runtime::test_str_ne(
-                    __shell
+                if ((__shell
+                    .get_var_or_env_checked("BOOT_MODE", "script.sh", 2445usize)
+                    .as_str())
+                    == ("bios"))
+                    && ((__shell
                         .get_var_or_env_checked("BOOTLOADER", "script.sh", 2445usize)
-                        .as_str(),
-                    "grub",
-                )) {
+                        .as_str())
+                        != ("grub"))
+                {
                     {
                         let __val = String::from("grub");
                         __shell.set_var("BOOTLOADER", __val);
@@ -14646,7 +14501,7 @@ fn configuration_hub(
                         vec![__shell.get_var_or_env_checked("DISK", "script.sh", 2449usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     get_partition_paths(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 rc = String::from("0");
                 __shell.set_status(0);
@@ -14677,14 +14532,13 @@ fn configuration_hub(
                 } else {
                     __shell.set_status(0);
                 }
-                if bash2rust_runtime::test_str_ne(
-                    __shell
-                        .get_var_or_env_checked("UI_RESULT", "script.sh", 2458usize)
-                        .as_str(),
-                    __shell
+                if (__shell
+                    .get_var_or_env_checked("UI_RESULT", "script.sh", 2458usize)
+                    .as_str())
+                    != (__shell
                         .get_var_or_env_checked("DISK_NAME", "script.sh", 2458usize)
-                        .as_str(),
-                ) {
+                        .as_str())
+                {
                     {
                         let __ao_ok = ({
                             let __args: Vec<String> = vec![
@@ -14730,7 +14584,7 @@ fn configuration_hub(
                     )];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -14758,7 +14612,7 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -14767,7 +14621,7 @@ fn step_prepare_disk(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __prog = String::from("wipefs");
@@ -14802,14 +14656,14 @@ fn step_prepare_disk(
             let __args: Vec<String> = vec![String::from("Disk signatures wiped")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
             let __args: Vec<String> = vec![String::from("wipefs reported warnings — continuing")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             warn(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     {
@@ -14819,7 +14673,7 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __ao_ok = ({
@@ -14904,14 +14758,13 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2491usize)
-            .as_str(),
-        "luks2",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2491usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __val = String::from("8309");
             __shell.set_var("root_code", __val);
@@ -14935,14 +14788,13 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 2497usize)
-            .as_str(),
-        "uefi",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 2497usize)
+        .as_str())
+        == ("uefi")
+    {
         {
             let __args: Vec<String> = vec![format!(
                 "Creating GPT layout: EFI ({}) + {}...",
@@ -14951,7 +14803,7 @@ fn step_prepare_disk(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -14987,7 +14839,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15026,14 +14878,13 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
-    } else if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2501usize)
-            .as_str(),
-        "luks2",
-    ) {
+    } else if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2501usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __args: Vec<String> = vec![format!(
                 "Creating GPT BIOS layout: BIOS Boot ({}) + /boot ({}) + {}...",
@@ -15043,7 +14894,7 @@ fn step_prepare_disk(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15079,7 +14930,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15115,7 +14966,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15154,7 +15005,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -15165,7 +15016,7 @@ fn step_prepare_disk(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15201,7 +15052,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sgdisk");
@@ -15240,7 +15091,7 @@ fn step_prepare_disk(
                     },
                 ],
             )?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     {
@@ -15250,7 +15101,7 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __ao_ok = ({
@@ -15294,26 +15145,27 @@ fn step_prepare_disk(
         let __args: Vec<String> = vec![String::from("settle")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if (!(bash2rust_runtime::test_block_device(
         __shell
             .get_var_or_env_checked("ROOT_PART", "script.sh", 2516usize)
             .as_str(),
-    ))) || ((bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("BOOT_PART", "script.sh", 2516usize)
-            .as_str(),
-    )) && (!(bash2rust_runtime::test_block_device(
-        __shell
-            .get_var_or_env_checked("BOOT_PART", "script.sh", 2516usize)
-            .as_str(),
-    )))) {
+    ))) || ((!(__shell
+        .get_var_or_env_checked("BOOT_PART", "script.sh", 2516usize)
+        .as_str())
+    .is_empty())
+        && (!(bash2rust_runtime::test_block_device(
+            __shell
+                .get_var_or_env_checked("BOOT_PART", "script.sh", 2516usize)
+                .as_str(),
+        ))))
+    {
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -15347,7 +15199,7 @@ fn step_prepare_disk(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -15359,7 +15211,7 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __ao_ok = ({
@@ -15400,11 +15252,11 @@ fn step_prepare_disk(
         });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
-    if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("BOOT_PART", "script.sh", 2525usize)
-            .as_str(),
-    ) {
+    if !(__shell
+        .get_var_or_env_checked("BOOT_PART", "script.sh", 2525usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __ao_ok = ({
                 let __prog = String::from("wipefs");
@@ -15454,7 +15306,7 @@ fn step_prepare_disk(
         let __args: Vec<String> = vec![String::from("settle")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -15471,7 +15323,7 @@ fn step_prepare_disk(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -15483,7 +15335,7 @@ fn step_prepare_disk(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -15501,7 +15353,7 @@ fn step_setup_storage(
         let __args: Vec<String> = vec![String::from("1"), String::from("Preparing storage...")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("1");
@@ -15510,12 +15362,11 @@ fn step_setup_storage(
     __shell.set_status(0);
     let mut target_dev = __shell.get_var_or_env_checked("ROOT_PART", "script.sh", 1usize);
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2540usize)
-            .as_str(),
-        "luks2",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 2540usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("15"),
@@ -15523,7 +15374,7 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_update_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![String::from(
@@ -15531,7 +15382,7 @@ fn step_setup_storage(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let mut __pipe_buf: Vec<u8> = Vec::new();
@@ -15615,7 +15466,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_stop(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -15647,7 +15498,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -15659,14 +15510,14 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_update_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> =
                 vec![String::from("Unlocking LUKS2 container as 'cryptroot'...")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let mut __pipe_buf: Vec<u8> = Vec::new();
@@ -15736,7 +15587,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_stop(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -15768,7 +15619,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -15778,14 +15629,14 @@ fn step_setup_storage(
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("udevadm");
             let __args: Vec<String> = vec![String::from("settle")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __val = {
@@ -15857,17 +15708,17 @@ fn step_setup_storage(
             };
             __shell.set_var("REAL_LUKS_UUID", __val);
         }
-        __shell.check_errexit();
-        if bash2rust_runtime::test_str_empty(
-            __shell
-                .get_var_or_env_checked("REAL_LUKS_UUID", "script.sh", 2574usize)
-                .as_str(),
-        ) {
+        __shell.check_errexit()?;
+        if (__shell
+            .get_var_or_env_checked("REAL_LUKS_UUID", "script.sh", 2574usize)
+            .as_str())
+        .is_empty()
+        {
             {
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_stop(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -15896,7 +15747,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -15910,7 +15761,7 @@ fn step_setup_storage(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -15931,7 +15782,7 @@ fn step_setup_storage(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __case_val = __shell.get_var_or_env_checked("FS_TYPE", "script.sh", 2586usize);
@@ -15971,7 +15822,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_stop(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __ao_ok = ({
@@ -16000,7 +15851,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![String::from("1")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -16035,7 +15886,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![format!("Formatting Btrfs on {}...", target_dev)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 log(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -16132,21 +15983,20 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("udevadm");
                 let __args: Vec<String> = vec![String::from("settle")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
-            if bash2rust_runtime::test_str_eq(
-                __shell
-                    .get_var_or_env_checked("BTRFS_USE_SUBVOLS", "script.sh", 2599usize)
-                    .as_str(),
-                "yes",
-            ) {
+            if (__shell
+                .get_var_or_env_checked("BTRFS_USE_SUBVOLS", "script.sh", 2599usize)
+                .as_str())
+                == ("yes")
+            {
                 {
                     let __args: Vec<String> = vec![
                         String::from("65"),
@@ -16154,7 +16004,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_update_step(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __args: Vec<String> = vec![format!(
@@ -16163,7 +16013,7 @@ fn step_setup_storage(
                     )];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16175,7 +16025,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 sub = String::from("");
                 __shell.set_status(0);
@@ -16216,7 +16066,7 @@ fn step_setup_storage(
                                     },
                                 ],
                             )?;
-                            __shell.check_errexit();
+                            __shell.check_errexit()?;
                         }
                     }
                 }
@@ -16225,7 +16075,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![String::from("/mnt")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16246,7 +16096,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mkdir");
@@ -16258,7 +16108,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16279,7 +16129,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16300,7 +16150,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16321,7 +16171,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16342,7 +16192,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16363,7 +16213,7 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 {
@@ -16371,7 +16221,7 @@ fn step_setup_storage(
                         vec![String::from("65"), String::from("Mounting Btrfs root...")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_update_step(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mount");
@@ -16385,14 +16235,14 @@ fn step_setup_storage(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __prog = String::from("mkdir");
                     let __args: Vec<String> = vec![String::from("-p"), String::from("/mnt/boot")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             }
         } else if bash2rust_runtime::pattern_match("ext4", &__case_val) {
@@ -16431,7 +16281,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_stop(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __ao_ok = ({
@@ -16460,7 +16310,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![String::from("1")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -16469,7 +16319,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![format!("Formatting ext4 on {}...", target_dev)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 log(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -16566,21 +16416,21 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("udevadm");
                 let __args: Vec<String> = vec![String::from("settle")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __args: Vec<String> =
                     vec![String::from("65"), String::from("Mounting ext4 root...")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_update_step(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("mount");
@@ -16592,14 +16442,14 @@ fn step_setup_storage(
                 ];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("mkdir");
                 let __args: Vec<String> = vec![String::from("-p"), String::from("/mnt/boot")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else if bash2rust_runtime::pattern_match("xfs", &__case_val) {
             if {
@@ -16637,7 +16487,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_stop(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 {
                     let __ao_ok = ({
@@ -16666,7 +16516,7 @@ fn step_setup_storage(
                     let __args: Vec<String> = vec![String::from("1")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -16701,7 +16551,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![format!("Formatting XFS on {}...", target_dev)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 log(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -16798,21 +16648,21 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("udevadm");
                 let __args: Vec<String> = vec![String::from("settle")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __args: Vec<String> =
                     vec![String::from("65"), String::from("Mounting XFS root...")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_update_step(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("mount");
@@ -16824,14 +16674,14 @@ fn step_setup_storage(
                 ];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __prog = String::from("mkdir");
                 let __args: Vec<String> = vec![String::from("-p"), String::from("/mnt/boot")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
     }
@@ -16901,17 +16751,17 @@ fn step_setup_storage(
         };
         __shell.set_var("ROOT_UUID", __val);
     }
-    __shell.check_errexit();
-    if bash2rust_runtime::test_str_empty(
-        __shell
-            .get_var_or_env_checked("ROOT_UUID", "script.sh", 2654usize)
-            .as_str(),
-    ) {
+    __shell.check_errexit()?;
+    if (__shell
+        .get_var_or_env_checked("ROOT_UUID", "script.sh", 2654usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -16940,7 +16790,7 @@ fn step_setup_storage(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -16953,14 +16803,13 @@ fn step_setup_storage(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 2661usize)
-            .as_str(),
-        "uefi",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 2661usize)
+        .as_str())
+        == ("uefi")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("82"),
@@ -16968,7 +16817,7 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_update_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __b = {
@@ -17003,7 +16852,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_stop(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -17032,7 +16881,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -17070,7 +16919,7 @@ fn step_setup_storage(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -17166,14 +17015,14 @@ fn step_setup_storage(
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("udevadm");
             let __args: Vec<String> = vec![String::from("settle")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("mount");
@@ -17187,7 +17036,7 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![String::from(
@@ -17195,13 +17044,13 @@ fn step_setup_storage(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
-    } else if bash2rust_runtime::test_str_non_empty(
-        __shell
-            .get_var_or_env_checked("BOOT_PART", "script.sh", 2675usize)
-            .as_str(),
-    ) {
+    } else if !(__shell
+        .get_var_or_env_checked("BOOT_PART", "script.sh", 2675usize)
+        .as_str())
+    .is_empty()
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("82"),
@@ -17209,7 +17058,7 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_update_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         if {
             let __b = {
@@ -17244,7 +17093,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 dash_stop(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             {
                 let __ao_ok = ({
@@ -17273,7 +17122,7 @@ fn step_setup_storage(
                 let __args: Vec<String> = vec![String::from("1")];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         } else {
             __shell.set_status(0);
@@ -17285,7 +17134,7 @@ fn step_setup_storage(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -17380,14 +17229,14 @@ fn step_setup_storage(
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("udevadm");
             let __args: Vec<String> = vec![String::from("settle")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("mount");
@@ -17399,14 +17248,14 @@ fn step_setup_storage(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> =
                 vec![String::from("Boot partition mounted at /mnt/boot (ext4)")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -17418,7 +17267,7 @@ fn step_setup_storage(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tty_km = String::from("");
     __shell.set_status(0);
@@ -17435,13 +17284,13 @@ fn step_setup_storage(
         }
         __shell.pop_stdout_capture()
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("mkdir");
         let __args: Vec<String> = vec![String::from("-p"), String::from("/mnt/etc")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("printf");
@@ -17456,7 +17305,7 @@ fn step_setup_storage(
                 mode: bash2rust_runtime::RedirectMode::OutputTruncate("/mnt/etc/vconsole.conf"),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -17465,7 +17314,7 @@ fn step_setup_storage(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -17477,7 +17326,7 @@ fn step_setup_storage(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -17497,7 +17346,7 @@ fn step_prepare_mirrors(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("sed");
@@ -17508,7 +17357,7 @@ fn step_prepare_mirrors(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("sed");
@@ -17519,7 +17368,7 @@ fn step_prepare_mirrors(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from(
@@ -17527,7 +17376,7 @@ fn step_prepare_mirrors(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -17536,13 +17385,13 @@ fn step_prepare_mirrors(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("Refreshing archlinux-keyring (--needed)...")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __b = {
@@ -17602,17 +17451,16 @@ fn step_prepare_mirrors(
             let __args: Vec<String> = vec![String::from("Keyring refresh had issues — continuing")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             warn(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("EXTRA_REFLECTOR", "script.sh", 2716usize)
-            .as_str(),
-        "yes",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("EXTRA_REFLECTOR", "script.sh", 2716usize)
+        .as_str())
+        == ("yes")
+    {
         {
             let __args: Vec<String> = vec![
                 String::from("60"),
@@ -17620,7 +17468,7 @@ fn step_prepare_mirrors(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_update_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![String::from(
@@ -17628,7 +17476,7 @@ fn step_prepare_mirrors(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -17784,7 +17632,7 @@ fn step_prepare_mirrors(
                         vec![String::from("Mirrorlist optimized with reflector")];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 {
@@ -17793,9 +17641,9 @@ fn step_prepare_mirrors(
                     )];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     warn(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
-                if bash2rust_runtime::test_file("/etc/pacman.d/mirrorlist.bak") {
+                if std::path::Path::new("/etc/pacman.d/mirrorlist.bak").is_file() {
                     {
                         let __prog = String::from("cp");
                         let __args: Vec<String> = vec![
@@ -17804,7 +17652,7 @@ fn step_prepare_mirrors(
                         ];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                 } else {
                     __shell.set_status(0);
@@ -17817,7 +17665,7 @@ fn step_prepare_mirrors(
                 )];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 warn(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
         }
     } else {
@@ -17825,14 +17673,14 @@ fn step_prepare_mirrors(
             let __args: Vec<String> = vec![String::from("Reflector skipped by user preference")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     {
         let __args: Vec<String> = vec![String::from("2"), String::from("Mirrors & keyring ready")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -17861,7 +17709,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17871,7 +17719,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17881,7 +17729,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17891,7 +17739,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17901,7 +17749,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17911,7 +17759,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17921,7 +17769,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17931,7 +17779,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17941,7 +17789,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17951,7 +17799,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17961,7 +17809,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17971,7 +17819,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17981,7 +17829,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -17991,7 +17839,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18001,7 +17849,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18011,7 +17859,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18021,7 +17869,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18031,7 +17879,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18041,7 +17889,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18051,7 +17899,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18061,7 +17909,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18071,7 +17919,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18081,7 +17929,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18091,7 +17939,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18101,7 +17949,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18111,7 +17959,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18121,7 +17969,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18131,7 +17979,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18141,7 +17989,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18151,7 +17999,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18161,7 +18009,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18171,7 +18019,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18181,7 +18029,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -18191,7 +18039,7 @@ fn write_chroot_vars(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         let __captured = __shell.pop_stdout_capture_raw();
         __shell.apply_captured_redirects(
@@ -18207,7 +18055,7 @@ fn write_chroot_vars(
         let __args: Vec<String> = vec![String::from("600"), target.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -18244,14 +18092,14 @@ fn write_chroot_script(
                 },
             ],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("chmod");
         let __args: Vec<String> = vec![String::from("+x"), target.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -18269,13 +18117,13 @@ fn step_pacstrap(
             vec![String::from("3"), String::from("Preparing package list...")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_package_list(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -18285,7 +18133,7 @@ fn step_pacstrap(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -18297,7 +18145,7 @@ fn step_pacstrap(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut rc_file = String::from("");
     __shell.set_status(0);
@@ -18307,7 +18155,7 @@ fn step_pacstrap(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("printf");
         let __args: Vec<String> = vec![String::from("1\\n")];
@@ -18321,7 +18169,7 @@ fn step_pacstrap(
                 mode: bash2rust_runtime::RedirectMode::OutputTruncate(rc_file.as_str()),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -18335,7 +18183,7 @@ fn step_pacstrap(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = {
@@ -18406,13 +18254,13 @@ fn step_pacstrap(
                 };
                 __shell.set_var("clean", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             {
                 let __args: Vec<String> =
                     vec![__shell.get_var_or_env_checked("clean", "script.sh", 3366usize)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 _log_file_append(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             if bash2rust_runtime::test_regex_match(
                 __shell
@@ -18438,7 +18286,7 @@ fn step_pacstrap(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_update_step(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else if bash2rust_runtime::test_regex_match(
                 __shell
@@ -18508,7 +18356,7 @@ fn step_pacstrap(
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3379usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_push_log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else if bash2rust_runtime::test_regex_match(
                 __shell
@@ -18578,7 +18426,7 @@ fn step_pacstrap(
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3388usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_push_log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else if bash2rust_runtime::test_regex_match(
                 __shell
@@ -18604,7 +18452,7 @@ fn step_pacstrap(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     let _ = __shell.run_command(&__prog, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
                 if bash2rust_runtime::test_int_gt(
                     __shell
@@ -18649,7 +18497,7 @@ fn step_pacstrap(
                         ];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         dash_update_step(__shell, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                 } else {
                     __shell.set_status(0);
@@ -18659,30 +18507,30 @@ fn step_pacstrap(
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3396usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_push_log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
-            } else if bash2rust_runtime::test_str_non_empty(
-                ({
-                    __shell.push_stdout_capture();
-                    {
-                        let __args: Vec<String> =
-                            vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
-                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                        __shell.errexit_suppress += 1;
-                        let __fn_res = trim(__shell, &__arg_refs);
-                        __shell.errexit_suppress -= 1;
-                        __fn_res?;
-                    }
-                    __shell.pop_stdout_capture()
-                })
-                .as_str(),
-            ) {
+            } else if !(({
+                __shell.push_stdout_capture();
+                {
+                    let __args: Vec<String> =
+                        vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
+                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                    __shell.errexit_suppress += 1;
+                    let __fn_res = trim(__shell, &__arg_refs);
+                    __shell.errexit_suppress -= 1;
+                    __fn_res?;
+                }
+                __shell.pop_stdout_capture()
+            })
+            .as_str())
+            .is_empty()
+            {
                 {
                     let __args: Vec<String> =
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3398usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_push_log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -18727,26 +18575,26 @@ fn step_pacstrap(
         }
         __sub_out
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("rm");
         let __args: Vec<String> = vec![String::from("-f"), rc_file.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_ne(cmd_rc.as_str(), "0") {
         {
             let __args: Vec<String> = vec![String::from("3")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_fail_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -18777,7 +18625,7 @@ fn step_pacstrap(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -18815,7 +18663,7 @@ fn step_pacstrap(
         let __args: Vec<String> = vec![String::from("pacstrap -K complete")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -18834,7 +18682,7 @@ fn step_pacstrap(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -18854,13 +18702,13 @@ fn step_genfstab(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("Generating /etc/fstab...")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("genfstab");
@@ -18875,7 +18723,7 @@ fn step_genfstab(
                 mode: bash2rust_runtime::RedirectMode::OutputTruncate("/mnt/etc/fstab"),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -18884,20 +18732,20 @@ fn step_genfstab(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if !(bash2rust_runtime::test_non_empty_file("/mnt/etc/fstab")) {
         {
             let __args: Vec<String> = vec![String::from("4")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_fail_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -18929,7 +18777,7 @@ fn step_genfstab(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -18975,7 +18823,7 @@ fn step_genfstab(
         }
         __sub_out
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     uuid_count = if uuid_count.is_empty() {
         String::from("0")
     } else {
@@ -18986,7 +18834,7 @@ fn step_genfstab(
         let __args: Vec<String> = vec![format!("fstab generated ({} UUID entries)", uuid_count)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -18995,7 +18843,7 @@ fn step_genfstab(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -19015,26 +18863,26 @@ fn step_run_chroot(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("/mnt/chroot_vars.sh")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         write_chroot_vars(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("/mnt/chroot.sh")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         write_chroot_script(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("mkdir");
         let __args: Vec<String> = vec![String::from("-p"), String::from("/mnt/root")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("install");
@@ -19046,7 +18894,7 @@ fn step_run_chroot(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         __shell.push_stdin_from_redirects(&[bash2rust_runtime::RedirectSpec {
@@ -19062,7 +18910,7 @@ fn step_run_chroot(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("printf");
@@ -19073,7 +18921,7 @@ fn step_run_chroot(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         let __captured = __shell.pop_stdout_capture_raw();
         __shell.apply_captured_redirects(
@@ -19092,7 +18940,7 @@ fn step_run_chroot(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("printf");
         let __args: Vec<String> = vec![String::from("1\\n")];
@@ -19106,14 +18954,14 @@ fn step_run_chroot(
                 mode: bash2rust_runtime::RedirectMode::OutputTruncate(rc_file.as_str()),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("line"), String::from("clean")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = {
@@ -19180,7 +19028,7 @@ fn step_run_chroot(
                 };
                 __shell.set_var("clean", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             if bash2rust_runtime::test_regex_match(
                 __shell
                     .get_var_or_env_checked("clean", "script.sh", 3463usize)
@@ -19200,7 +19048,7 @@ fn step_run_chroot(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_update_step(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 {
@@ -19208,30 +19056,30 @@ fn step_run_chroot(
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3466usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     _log_file_append(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
-                if bash2rust_runtime::test_str_non_empty(
-                    ({
-                        __shell.push_stdout_capture();
-                        {
-                            let __args: Vec<String> =
-                                vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
-                            let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                            __shell.errexit_suppress += 1;
-                            let __fn_res = trim(__shell, &__arg_refs);
-                            __shell.errexit_suppress -= 1;
-                            __fn_res?;
-                        }
-                        __shell.pop_stdout_capture()
-                    })
-                    .as_str(),
-                ) {
+                if !(({
+                    __shell.push_stdout_capture();
+                    {
+                        let __args: Vec<String> =
+                            vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
+                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                        __shell.errexit_suppress += 1;
+                        let __fn_res = trim(__shell, &__arg_refs);
+                        __shell.errexit_suppress -= 1;
+                        __fn_res?;
+                    }
+                    __shell.pop_stdout_capture()
+                })
+                .as_str())
+                .is_empty()
+                {
                     {
                         let __args: Vec<String> =
                             vec![__shell.get_var_or_env_checked("clean", "script.sh", 3468usize)];
                         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                         dash_push_log(__shell, &__arg_refs)?;
-                        __shell.check_errexit();
+                        __shell.check_errexit()?;
                     }
                 } else {
                     __shell.set_status(0);
@@ -19277,7 +19125,7 @@ fn step_run_chroot(
         }
         __sub_out
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("rm");
         let __args: Vec<String> = vec![
@@ -19287,20 +19135,20 @@ fn step_run_chroot(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_ne(cmd_rc.as_str(), "0") {
         {
             let __args: Vec<String> = vec![String::from("5")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_fail_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -19331,7 +19179,7 @@ fn step_run_chroot(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -19345,13 +19193,13 @@ fn step_run_chroot(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("Chroot helper files removed")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -19360,7 +19208,7 @@ fn step_run_chroot(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -19374,18 +19222,18 @@ fn step_extra_custom_packages(
     let _ = &args;
     __shell.set_positional_args(&args);
     {
-        let __ao_ok = (bash2rust_runtime::test_str_non_empty(
-            __shell
-                .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 3495usize)
-                .as_str(),
-        )) || ({
-            {
-                let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
-                __shell.set_status(__rc);
-                return Ok(());
-            }
-            true
-        });
+        let __ao_ok = (!(__shell
+            .get_var_or_env_checked("EXTRA_CUSTOM_PKGS", "script.sh", 3495usize)
+            .as_str())
+        .is_empty())
+            || ({
+                {
+                    let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
+                    __shell.set_status(__rc);
+                    return Ok(());
+                }
+                true
+            });
         __shell.set_status(if __ao_ok { 0 } else { 1 });
     }
     let mut step_idx = String::from("6");
@@ -19397,21 +19245,21 @@ fn step_extra_custom_packages(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("-a"), String::from("custom_arr=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("-a"), String::from("valid_pkgs=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut pkg = String::from("");
     __shell.set_status(0);
@@ -19432,7 +19280,7 @@ fn step_extra_custom_packages(
                 mode: bash2rust_runtime::RedirectMode::InputBytes(__redir_buf_0.as_bytes()),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let mut __items: Vec<String> = Vec::new();
@@ -19463,7 +19311,7 @@ fn step_extra_custom_packages(
                 vec![step_idx.clone(), String::from("No valid extra packages")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_finish_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -19481,7 +19329,7 @@ fn step_extra_custom_packages(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("printf");
         let __args: Vec<String> = vec![String::from("1\\n")];
@@ -19495,7 +19343,7 @@ fn step_extra_custom_packages(
                 mode: bash2rust_runtime::RedirectMode::OutputTruncate(rc_file.as_str()),
             }],
         )?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -19507,14 +19355,14 @@ fn step_extra_custom_packages(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
         let __args: Vec<String> = vec![String::from("line"), String::from("clean")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __redir_buf_0 = {
@@ -19589,13 +19437,13 @@ fn step_extra_custom_packages(
                 };
                 __shell.set_var("clean", __val);
             }
-            __shell.check_errexit();
+            __shell.check_errexit()?;
             {
                 let __args: Vec<String> =
                     vec![__shell.get_var_or_env_checked("clean", "script.sh", 3522usize)];
                 let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                 _log_file_append(__shell, &__arg_refs)?;
-                __shell.check_errexit();
+                __shell.check_errexit()?;
             }
             if bash2rust_runtime::test_regex_match(
                 __shell
@@ -19610,33 +19458,33 @@ fn step_extra_custom_packages(
                     ];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_update_step(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
             }
-            if bash2rust_runtime::test_str_non_empty(
-                ({
-                    __shell.push_stdout_capture();
-                    {
-                        let __args: Vec<String> =
-                            vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
-                        let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
-                        __shell.errexit_suppress += 1;
-                        let __fn_res = trim(__shell, &__arg_refs);
-                        __shell.errexit_suppress -= 1;
-                        __fn_res?;
-                    }
-                    __shell.pop_stdout_capture()
-                })
-                .as_str(),
-            ) {
+            if !(({
+                __shell.push_stdout_capture();
+                {
+                    let __args: Vec<String> =
+                        vec![__shell.get_var_or_env_checked("clean", "script.sh", 1usize)];
+                    let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
+                    __shell.errexit_suppress += 1;
+                    let __fn_res = trim(__shell, &__arg_refs);
+                    __shell.errexit_suppress -= 1;
+                    __fn_res?;
+                }
+                __shell.pop_stdout_capture()
+            })
+            .as_str())
+            .is_empty()
+            {
                 {
                     let __args: Vec<String> =
                         vec![__shell.get_var_or_env_checked("clean", "script.sh", 3527usize)];
                     let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
                     dash_push_log(__shell, &__arg_refs)?;
-                    __shell.check_errexit();
+                    __shell.check_errexit()?;
                 }
             } else {
                 __shell.set_status(0);
@@ -19681,13 +19529,13 @@ fn step_extra_custom_packages(
         }
         __sub_out
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __prog = String::from("rm");
         let __args: Vec<String> = vec![String::from("-f"), rc_file.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if bash2rust_runtime::test_int_ne(cmd_rc.as_str(), "0") {
         {
@@ -19698,14 +19546,14 @@ fn step_extra_custom_packages(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             warn(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> =
                 vec![step_idx.clone(), String::from("Completed with warnings")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_finish_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -19715,7 +19563,7 @@ fn step_extra_custom_packages(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![
@@ -19727,7 +19575,7 @@ fn step_extra_custom_packages(
             ];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_finish_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -19754,7 +19602,7 @@ fn step_finalize(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_begin_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __b = {
@@ -19773,13 +19621,13 @@ fn step_finalize(
             let __args: Vec<String> = vec![step_idx.clone()];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_fail_step(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             dash_stop(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -19808,22 +19656,20 @@ fn step_finalize(
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
     }
-    if (bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("BOOT_MODE", "script.sh", 3559usize)
-            .as_str(),
-        "uefi",
-    )) && (bash2rust_runtime::test_str_eq(
-        __shell
+    if ((__shell
+        .get_var_or_env_checked("BOOT_MODE", "script.sh", 3559usize)
+        .as_str())
+        == ("uefi"))
+        && ((__shell
             .get_var_or_env_checked("BOOTLOADER", "script.sh", 3559usize)
-            .as_str(),
-        "systemd-boot",
-    )) {
+            .as_str())
+            == ("systemd-boot"))
+    {
         {
             let __ao_ok = ({
                 let __prog = String::from("bootctl");
@@ -19874,7 +19720,7 @@ fn step_finalize(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_update_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __prog = String::from("cp");
@@ -19940,7 +19786,7 @@ fn step_finalize(
             let __args: Vec<String> = vec![String::from("Log saved to ~/arch-install.log")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -19949,20 +19795,20 @@ fn step_finalize(
         let __args: Vec<String> = vec![step_idx.clone(), String::from("Installation complete!")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_finish_step(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("sleep");
         let __args: Vec<String> = vec![String::from("1")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_stop(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("0");
@@ -20028,14 +19874,14 @@ fn step_finalize(
             let __args: Vec<String> = vec![String::from("Unmounting filesystems...")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("sync");
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __ao_ok = ({
@@ -20063,12 +19909,11 @@ fn step_finalize(
             });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
-        if bash2rust_runtime::test_str_eq(
-            __shell
-                .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3590usize)
-                .as_str(),
-            "luks2",
-        ) {
+        if (__shell
+            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3590usize)
+            .as_str())
+            == ("luks2")
+        {
             {
                 let __ao_ok = ({
                     let __prog = String::from("cryptsetup");
@@ -20103,14 +19948,14 @@ fn step_finalize(
             let __args: Vec<String> = vec![String::from("Rebooting...")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("reboot");
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20124,14 +19969,13 @@ fn step_finalize(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3598usize)
-            .as_str(),
-        "luks2",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3598usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __prog = String::from("printf");
             let __args: Vec<String> = vec![String::from(
@@ -20139,7 +19983,7 @@ fn step_finalize(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -20147,7 +19991,7 @@ fn step_finalize(
             let __args: Vec<String> = vec![String::from("  umount -R /mnt && reboot\\n\\n")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     Ok(())
@@ -20168,14 +20012,13 @@ fn _dry_run_validate_profile(
             vec![__shell.get_var_or_env_checked("DISK", "script.sh", 3610usize)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         get_partition_paths(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3611usize)
-            .as_str(),
-        "luks2",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("USE_ENCRYPTION", "script.sh", 3611usize)
+        .as_str())
+        == ("luks2")
+    {
         {
             let __val = String::from("/dev/mapper/cryptroot");
             __shell.set_var("ROOT_DEV", __val);
@@ -20192,7 +20035,7 @@ fn _dry_run_validate_profile(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_package_list(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut tmp_dir = String::from("");
     __shell.set_status(0);
@@ -20205,32 +20048,32 @@ fn _dry_run_validate_profile(
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __args: Vec<String> = vec![format!("{}/chroot_vars.sh", tmp_dir)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         write_chroot_vars(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!("{}/chroot.sh", tmp_dir)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         write_chroot_script(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("bash");
         let __args: Vec<String> = vec![String::from("-n"), format!("{}/chroot_vars.sh", tmp_dir)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("bash");
         let __args: Vec<String> = vec![String::from("-n"), format!("{}/chroot.sh", tmp_dir)];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     if {
         let __prog = String::from("grep");
@@ -20263,7 +20106,7 @@ fn _dry_run_validate_profile(
             let __args: Vec<String> = vec![String::from("-rf"), tmp_dir.clone()];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __args: Vec<String> = vec![String::from(
@@ -20271,14 +20114,14 @@ fn _dry_run_validate_profile(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20288,7 +20131,7 @@ fn _dry_run_validate_profile(
         let __args: Vec<String> = vec![String::from("-rf"), tmp_dir.clone()];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![
@@ -20306,7 +20149,7 @@ fn _dry_run_validate_profile(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -20326,7 +20169,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         section(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from(
@@ -20334,19 +20177,19 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         get_term_size(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("18"), String::from("74")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -20362,13 +20205,13 @@ fn run_dry_run(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![String::from("21"), String::from("76"), String::from("12")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         calc_ui_dims(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("local");
@@ -20388,7 +20231,7 @@ fn run_dry_run(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -20403,7 +20246,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut welcome_sample = format!(
         "Welcome to ArchInstall TUI v{}\\nBoot: uefi | RAM: 4096MB\\nConfigure settings then install.",
@@ -20436,14 +20279,14 @@ fn run_dry_run(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20454,7 +20297,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("/dev/sda");
@@ -20470,7 +20313,7 @@ fn run_dry_run(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_init(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("done");
@@ -20516,7 +20359,7 @@ fn run_dry_run(
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -20533,7 +20376,7 @@ fn run_dry_run(
         };
         __shell.set_var("t_pct", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = {
             __shell.push_stdout_capture();
@@ -20549,7 +20392,7 @@ fn run_dry_run(
         };
         __shell.set_var("bar_sample", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __val = {
             __shell.push_stdout_capture();
@@ -20612,23 +20455,23 @@ fn run_dry_run(
         };
         __shell.set_var("frame_lines", __val);
     }
-    __shell.check_errexit();
-    if (bash2rust_runtime::test_str_ne(
-        __shell
-            .get_var_or_env_checked("bar_sample", "script.sh", 3667usize)
-            .as_str(),
-        "[##########----------]",
-    )) || ((bash2rust_runtime::test_int_lt(
-        __shell
-            .get_var_or_env_checked("t_pct", "script.sh", 3667usize)
-            .as_str(),
-        "40",
-    )) || (bash2rust_runtime::test_int_gt(
-        __shell
-            .get_var_or_env_checked("t_pct", "script.sh", 3667usize)
-            .as_str(),
-        "55",
-    ))) {
+    __shell.check_errexit()?;
+    if ((__shell
+        .get_var_or_env_checked("bar_sample", "script.sh", 3667usize)
+        .as_str())
+        != ("[##########----------]"))
+        || ((bash2rust_runtime::test_int_lt(
+            __shell
+                .get_var_or_env_checked("t_pct", "script.sh", 3667usize)
+                .as_str(),
+            "40",
+        )) || (bash2rust_runtime::test_int_gt(
+            __shell
+                .get_var_or_env_checked("t_pct", "script.sh", 3667usize)
+                .as_str(),
+            "55",
+        )))
+    {
         {
             let __args: Vec<String> = vec![format!(
                 "Dashboard math check failed (bar={}, total_pct={})",
@@ -20637,14 +20480,14 @@ fn run_dry_run(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20659,7 +20502,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut stripped = String::from("");
     __shell.set_status(0);
@@ -20676,20 +20519,20 @@ fn run_dry_run(
         }
         __shell.pop_stdout_capture()
     };
-    __shell.check_errexit();
-    if bash2rust_runtime::test_str_ne(stripped.as_str(), "[OK] Clean log line") {
+    __shell.check_errexit()?;
+    if (stripped.as_str()) != ("[OK] Clean log line") {
         {
             let __args: Vec<String> = vec![format!("ANSI stripping check failed: '{}'", stripped)];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20698,19 +20541,19 @@ fn run_dry_run(
         let __args: Vec<String> = vec![String::from("ANSI-free log sanitization: OK")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         detect_cpu_microcode(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         detect_gpu_and_vm(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = {
@@ -20727,7 +20570,7 @@ fn run_dry_run(
         };
         __shell.set_var("TOTAL_RAM_MB", __val);
     }
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __args: Vec<String> = vec![format!(
             "Host: {} {} | RAM: {}MB | CPU ucode: {} | GPU hint: {}",
@@ -20756,7 +20599,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut ok = String::from("1");
     __shell.set_status(0);
@@ -20886,7 +20729,7 @@ fn run_dry_run(
         }
         __shell.pop_stdout_capture()
     };
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     {
         let __ao_ok = (bash2rust_runtime::test_int_ge(sample_score.as_str(), "4"))
             || ({
@@ -20901,14 +20744,14 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("Validator self-test failed!")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             err(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __prog = String::from("exit");
             let __args: Vec<String> = vec![String::from("1")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             let _ = __shell.run_command(&__prog, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         __shell.set_status(0);
@@ -20920,19 +20763,19 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_locale_menu(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         build_keyboard_menu(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -20948,7 +20791,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __val = String::from("archuser");
@@ -20997,140 +20840,140 @@ fn run_dry_run(
         __shell.set_var("KEYBOARD", __val);
     }
     __shell.set_status(0);
-    if bash2rust_runtime::test_str_non_empty(
-        (format!(
-            "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}",
-            match __shell
-                .get_var("DRY_BOOT_MODE")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_BOOT_MODE").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_BOOTLOADER")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_BOOTLOADER").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_ENCRYPTION")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_ENCRYPTION").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_FS")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_FS").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_KERNEL")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_KERNEL").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_DE")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_DE").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_DM")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_DM").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_GPU")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_GPU").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_VM_TYPE")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_VM_TYPE").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_AUDIO")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_AUDIO").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_NETWORK")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_NETWORK").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_SWAP")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_SWAP").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_FIREWALL")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_FIREWALL").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_AUR")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_AUR").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_SHELL")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_SHELL").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            },
-            match __shell
-                .get_var("DRY_CUSTOM_PKGS")
-                .map(str::to_owned)
-                .or_else(|| std::env::var("DRY_CUSTOM_PKGS").ok())
-            {
-                Some(__v) if !__v.is_empty() => __v,
-                _ => String::from(""),
-            }
-        ))
-        .as_str(),
-    ) {
+    if !((format!(
+        "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}",
+        match __shell
+            .get_var("DRY_BOOT_MODE")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_BOOT_MODE").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_BOOTLOADER")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_BOOTLOADER").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_ENCRYPTION")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_ENCRYPTION").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_FS")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_FS").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_KERNEL")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_KERNEL").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_DE")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_DE").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_DM")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_DM").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_GPU")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_GPU").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_VM_TYPE")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_VM_TYPE").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_AUDIO")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_AUDIO").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_NETWORK")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_NETWORK").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_SWAP")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_SWAP").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_FIREWALL")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_FIREWALL").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_AUR")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_AUR").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_SHELL")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_SHELL").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        },
+        match __shell
+            .get_var("DRY_CUSTOM_PKGS")
+            .map(str::to_owned)
+            .or_else(|| std::env::var("DRY_CUSTOM_PKGS").ok())
+        {
+            Some(__v) if !__v.is_empty() => __v,
+            _ => String::from(""),
+        }
+    ))
+    .as_str())
+    .is_empty()
+    {
         {
             let __val = String::from("/dev/nvme0n1");
             __shell.set_var("DISK", __val);
@@ -21161,19 +21004,18 @@ fn run_dry_run(
         }
         __shell.set_status(0);
         {
-            let __ao_ok = (bash2rust_runtime::test_str_eq(
-                __shell
-                    .get_var_or_env_checked("BOOT_MODE", "script.sh", 3720usize)
-                    .as_str(),
-                "bios",
-            )) && ({
-                {
-                    let __val = String::from("grub");
-                    __shell.set_var("BOOTLOADER", __val);
-                }
-                __shell.set_status(0);
-                __shell.last_status == 0
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("BOOT_MODE", "script.sh", 3720usize)
+                .as_str())
+                == ("bios"))
+                && ({
+                    {
+                        let __val = String::from("grub");
+                        __shell.set_var("BOOTLOADER", __val);
+                    }
+                    __shell.set_status(0);
+                    __shell.last_status == 0
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         {
@@ -21206,19 +21048,18 @@ fn run_dry_run(
         }
         __shell.set_status(0);
         {
-            let __ao_ok = (bash2rust_runtime::test_str_ne(
-                __shell
-                    .get_var_or_env_checked("FS_TYPE", "script.sh", 3724usize)
-                    .as_str(),
-                "btrfs",
-            )) && ({
-                {
-                    let __val = String::from("no");
-                    __shell.set_var("BTRFS_USE_SUBVOLS", __val);
-                }
-                __shell.set_status(0);
-                __shell.last_status == 0
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("FS_TYPE", "script.sh", 3724usize)
+                .as_str())
+                != ("btrfs"))
+                && ({
+                    {
+                        let __val = String::from("no");
+                        __shell.set_var("BTRFS_USE_SUBVOLS", __val);
+                    }
+                    __shell.set_status(0);
+                    __shell.last_status == 0
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         {
@@ -21268,7 +21109,7 @@ fn run_dry_run(
             };
             __shell.set_var("DM_CHOICE", __val);
         }
-        __shell.check_errexit();
+        __shell.check_errexit()?;
         {
             let __val = match __shell
                 .get_var("DRY_GPU")
@@ -21388,19 +21229,18 @@ fn run_dry_run(
         }
         __shell.set_status(0);
         {
-            let __ao_ok = (bash2rust_runtime::test_str_ne(
-                __shell
-                    .get_var_or_env_checked("FS_TYPE", "script.sh", 3739usize)
-                    .as_str(),
-                "btrfs",
-            )) && ({
-                {
-                    let __val = String::from("no");
-                    __shell.set_var("EXTRA_SNAPPER", __val);
-                }
-                __shell.set_status(0);
-                __shell.last_status == 0
-            });
+            let __ao_ok = ((__shell
+                .get_var_or_env_checked("FS_TYPE", "script.sh", 3739usize)
+                .as_str())
+                != ("btrfs"))
+                && ({
+                    {
+                        let __val = String::from("no");
+                        __shell.set_var("EXTRA_SNAPPER", __val);
+                    }
+                    __shell.set_status(0);
+                    __shell.last_status == 0
+                });
             __shell.set_status(if __ao_ok { 0 } else { 1 });
         }
         {
@@ -21412,7 +21252,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("Custom Env Profile")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _dry_run_validate_profile(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -21534,7 +21374,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("Profile 1: UEFI/LUKS2/Btrfs/GNOME/yay")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _dry_run_validate_profile(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __val = String::from("/dev/sda");
@@ -21655,7 +21495,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("Profile 2: BIOS/ext4/GRUB/Hyprland/paru")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _dry_run_validate_profile(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __val = String::from("/dev/vda");
@@ -21767,7 +21607,7 @@ fn run_dry_run(
                 vec![String::from("Profile 3: UEFI/LUKS2/XFS/Minimal/NVIDIA")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _dry_run_validate_profile(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __val = String::from("/dev/sda");
@@ -21888,7 +21728,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("Profile 4: UEFI/ext4/GRUB/i3wm/Ly/QEMU")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             _dry_run_validate_profile(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     if {
@@ -21917,7 +21757,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("TUI backend detected: dialog")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else if {
         let __prog = String::from("command");
@@ -21945,7 +21785,7 @@ fn run_dry_run(
             let __args: Vec<String> = vec![String::from("TUI backend detected: whiptail")];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             log(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     } else {
         {
@@ -21954,14 +21794,14 @@ fn run_dry_run(
             )];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             warn(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
     }
     {
         let __args: Vec<String> = vec![String::from("Dry-Run Complete")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         section(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![format!(
@@ -21970,7 +21810,7 @@ fn run_dry_run(
         )];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         log(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -21988,19 +21828,18 @@ fn main_2(
         __args.extend(args.iter().map(|s| (*s).to_owned()));
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         parse_args(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
-    if bash2rust_runtime::test_str_eq(
-        __shell
-            .get_var_or_env_checked("DRY_RUN", "script.sh", 3792usize)
-            .as_str(),
-        "1",
-    ) {
+    if (__shell
+        .get_var_or_env_checked("DRY_RUN", "script.sh", 3792usize)
+        .as_str())
+        == ("1")
+    {
         {
             let __args: Vec<String> = vec![];
             let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
             run_dry_run(__shell, &__arg_refs)?;
-            __shell.check_errexit();
+            __shell.check_errexit()?;
         }
         {
             let __rc = (String::from("0")).trim().parse::<i32>().unwrap_or(0);
@@ -22014,85 +21853,85 @@ fn main_2(
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         init_logging(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         preflight_check(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         init_tui(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         prompt_welcome(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         configuration_hub(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         dash_start(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_prepare_disk(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_setup_storage(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_prepare_mirrors(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_pacstrap(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_genfstab(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_run_chroot(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_extra_custom_packages(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __args: Vec<String> = vec![];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         step_finalize(__shell, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     Ok(())
 }
@@ -22103,415 +21942,421 @@ fn __dispatch_dynamic_fn(
     args: &[&str],
 ) -> Result<Option<i32>, Box<dyn std::error::Error>> {
     match prog {
-        "build_keyboard_menu" => {
-            build_keyboard_menu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_log_file_append" => {
-            _log_file_append(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_render" => {
-            dash_render(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "get_ram_mb" => {
-            get_ram_mb(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "log" => {
-            log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_gpu_and_vm" => {
-            detect_gpu_and_vm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_setup_storage" => {
-            step_setup_storage(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "write_chroot_vars" => {
-            write_chroot_vars(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_run_chroot" => {
-            step_run_chroot(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "calc_ui_dims" => {
-            calc_ui_dims(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_boot_mode" => {
-            detect_boot_mode(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "list_region_cities" => {
-            list_region_cities(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_bootloader" => {
-            prompt_bootloader(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_discover_disks" => {
-            _discover_disks(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_user_and_host" => {
-            prompt_user_and_host(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_confirm" => {
-            ui_confirm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_checklist" => {
-            ui_checklist(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_password_strength" => {
-            validate_password_strength(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_desktop_and_dm" => {
-            prompt_desktop_and_dm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "check_disk_space" => {
-            check_disk_space(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "preflight_check" => {
-            preflight_check(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_welcome" => {
-            prompt_welcome(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_kernel" => {
-            prompt_kernel(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_username" => {
-            validate_username(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_dm" => {
-            prompt_dm(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_network" => {
-            prompt_network(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_extra_custom_packages" => {
-            step_extra_custom_packages(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_menu" => {
-            ui_menu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "needs_scrolltext" => {
-            needs_scrolltext(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_genfstab" => {
-            step_genfstab(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_begin_step" => {
-            dash_begin_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_update_step" => {
-            dash_update_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_info" => {
-            ui_info(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_error" => {
-            ui_error(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "do_cleanup" => {
-            do_cleanup(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_start" => {
-            dash_start(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_run_tui_capture" => {
-            _run_tui_capture(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "get_partition_paths" => {
-            get_partition_paths(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "recommended_dm_for_de" => {
-            recommended_dm_for_de(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_encryption" => {
-            prompt_encryption(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_locale_keymap_tz" => {
-            prompt_locale_keymap_tz(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_aur" => {
-            prompt_aur(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_normalize_tui_rc" => {
-            _normalize_tui_rc(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_disk" => {
-            prompt_disk(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_password" => {
-            ui_password(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_extras" => {
-            prompt_extras(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_guided_step_applicable" => {
-            _guided_step_applicable(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_finalize" => {
-            step_finalize(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_dry_run_validate_profile" => {
-            _dry_run_validate_profile(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "main" => {
-            main_2(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_package_name" => {
-            validate_package_name(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_emit_log" => {
-            _emit_log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_prepare_disk" => {
-            step_prepare_disk(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "run_guided_setup" => {
-            run_guided_setup(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "log_debug" => {
-            log_debug(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_gpu" => {
-            prompt_gpu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "build_package_list" => {
-            build_package_list(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_format_elapsed" => {
-            dash_format_elapsed(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_firewall" => {
-            prompt_firewall(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_prepare_mirrors" => {
-            step_prepare_mirrors(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_finish_step" => {
-            dash_finish_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "on_interrupt" => {
-            on_interrupt(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "detect_cpu_microcode" => {
-            detect_cpu_microcode(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_desktop" => {
-            prompt_desktop(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_filesystem" => {
-            prompt_filesystem(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_audio" => {
-            prompt_audio(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "init_logging" => {
-            init_logging(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_init" => {
-            dash_init(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "warn" => {
-            warn(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_calc_total_pct" => {
-            dash_calc_total_pct(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "parse_args" => {
-            parse_args(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "is_nvidia_gpu" => {
-            is_nvidia_gpu(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "step_pacstrap" => {
-            step_pacstrap(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "run_dry_run" => {
-            run_dry_run(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_stop" => {
-            dash_stop(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "_run_tui_no_out" => {
-            _run_tui_no_out(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "err" => {
-            err(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "retry_cmd" => {
-            retry_cmd(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "strip_ansi" => {
-            strip_ansi(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "section" => {
-            section(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "map_tty_keymap" => {
-            map_tty_keymap(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "trim" => {
-            trim(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_format_bar" => {
-            dash_format_bar(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_push_log" => {
-            dash_push_log(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "check_internet" => {
-            check_internet(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
         "dash_build_frame" => {
             dash_build_frame(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "show_version" => {
-            show_version(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "ui_yesno" => {
-            ui_yesno(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "show_help" => {
-            show_help(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "on_error" => {
-            on_error(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "extras_summary" => {
-            extras_summary(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "prompt_swap" => {
-            prompt_swap(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "validate_hostname" => {
-            validate_hostname(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "dash_fail_step" => {
-            dash_fail_step(__shell, args)?;
-            Ok(Some(__shell.last_status))
-        }
-        "on_exit" => {
-            on_exit(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "get_term_size" => {
             get_term_size(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
+        "dash_start" => {
+            dash_start(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_run_tui_no_out" => {
+            _run_tui_no_out(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_checklist" => {
+            ui_checklist(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_render" => {
+            dash_render(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_interrupt" => {
+            on_interrupt(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "retry_cmd" => {
+            retry_cmd(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "calc_ui_dims" => {
+            calc_ui_dims(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_log_file_append" => {
+            _log_file_append(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "err" => {
+            err(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_update_step" => {
+            dash_update_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "list_region_cities" => {
+            list_region_cities(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_filesystem" => {
+            prompt_filesystem(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
         "configuration_hub" => {
             configuration_hub(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "ui_input" => {
-            ui_input(__shell, args)?;
+        "step_prepare_mirrors" => {
+            step_prepare_mirrors(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        "build_locale_menu" => {
-            build_locale_menu(__shell, args)?;
+        "step_finalize" => {
+            step_finalize(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_menu" => {
+            ui_menu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "write_chroot_vars" => {
+            write_chroot_vars(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_swap" => {
+            prompt_swap(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "detect_gpu_and_vm" => {
+            detect_gpu_and_vm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_push_log" => {
+            dash_push_log(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "init_tui" => {
             init_tui(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
+        "ui_info" => {
+            ui_info(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "recommended_dm_for_de" => {
+            recommended_dm_for_de(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "extras_summary" => {
+            extras_summary(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_welcome" => {
+            prompt_welcome(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_desktop" => {
+            prompt_desktop(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_password_strength" => {
+            validate_password_strength(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_guided_step_applicable" => {
+            _guided_step_applicable(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_emit_log" => {
+            _emit_log(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_error" => {
+            ui_error(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_begin_step" => {
+            dash_begin_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_hostname" => {
+            validate_hostname(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_stop" => {
+            dash_stop(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "show_version" => {
+            show_version(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_package_name" => {
+            validate_package_name(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_run_tui_capture" => {
+            _run_tui_capture(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_format_bar" => {
+            dash_format_bar(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "detect_cpu_microcode" => {
+            detect_cpu_microcode(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_kernel" => {
+            prompt_kernel(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_dm" => {
+            prompt_dm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_gpu" => {
+            prompt_gpu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_fail_step" => {
+            dash_fail_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_yesno" => {
+            ui_yesno(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "preflight_check" => {
+            preflight_check(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_encryption" => {
+            prompt_encryption(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "strip_ansi" => {
+            strip_ansi(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "log_debug" => {
+            log_debug(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_finish_step" => {
+            dash_finish_step(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_network" => {
+            prompt_network(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_extras" => {
+            prompt_extras(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_extra_custom_packages" => {
+            step_extra_custom_packages(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "warn" => {
+            warn(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_run_chroot" => {
+            step_run_chroot(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "init_logging" => {
+            init_logging(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "section" => {
+            section(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "detect_boot_mode" => {
+            detect_boot_mode(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "trim" => {
+            trim(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_bootloader" => {
+            prompt_bootloader(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_audio" => {
+            prompt_audio(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_genfstab" => {
+            step_genfstab(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "main" => {
+            main_2(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_password" => {
+            ui_password(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "check_disk_space" => {
+            check_disk_space(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_firewall" => {
+            prompt_firewall(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "run_guided_setup" => {
+            run_guided_setup(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "do_cleanup" => {
+            do_cleanup(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "check_internet" => {
+            check_internet(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
         "prompt_passwords" => {
             prompt_passwords(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "get_ram_mb" => {
+            get_ram_mb(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "build_locale_menu" => {
+            build_locale_menu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_locale_keymap_tz" => {
+            prompt_locale_keymap_tz(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_exit" => {
+            on_exit(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "log" => {
+            log(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_user_and_host" => {
+            prompt_user_and_host(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_format_elapsed" => {
+            dash_format_elapsed(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "build_keyboard_menu" => {
+            build_keyboard_menu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "map_tty_keymap" => {
+            map_tty_keymap(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_normalize_tui_rc" => {
+            _normalize_tui_rc(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "on_error" => {
+            on_error(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_dry_run_validate_profile" => {
+            _dry_run_validate_profile(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "is_nvidia_gpu" => {
+            is_nvidia_gpu(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_init" => {
+            dash_init(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_aur" => {
+            prompt_aur(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_confirm" => {
+            ui_confirm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "ui_input" => {
+            ui_input(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "get_partition_paths" => {
+            get_partition_paths(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "_discover_disks" => {
+            _discover_disks(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_setup_storage" => {
+            step_setup_storage(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "run_dry_run" => {
+            run_dry_run(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "build_package_list" => {
+            build_package_list(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_disk" => {
+            prompt_disk(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "dash_calc_total_pct" => {
+            dash_calc_total_pct(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "validate_username" => {
+            validate_username(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "prompt_desktop_and_dm" => {
+            prompt_desktop_and_dm(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_prepare_disk" => {
+            step_prepare_disk(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
         "write_chroot_script" => {
             write_chroot_script(__shell, args)?;
             Ok(Some(__shell.last_status))
         }
-        _ => Ok(None),
+        "needs_scrolltext" => {
+            needs_scrolltext(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "step_pacstrap" => {
+            step_pacstrap(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "show_help" => {
+            show_help(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        "parse_args" => {
+            parse_args(__shell, args)?;
+            Ok(Some(__shell.last_status))
+        }
+        _ => {
+            if let Some(__res) = __shell.call_sourced_fn(prog, args) {
+                Ok(Some(__res?))
+            } else {
+                Ok(None)
+            }
+        }
     }
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22529,7 +22374,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let __args: Vec<String> = vec![String::from("022")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let script_version = String::from("4.2");
     __shell.set_var("SCRIPT_VERSION", script_version.clone());
@@ -22541,7 +22386,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         __shell.command_subst_with_redirects(&__prog, &__arg_refs, &[])?
     };
     __shell.set_var("SCRIPT_NAME", script_name.clone());
-    __shell.check_errexit();
+    __shell.check_errexit()?;
     let ui_backtitle = format!(
         "ArchInstall TUI v{} | Arrows: Move  Space: Toggle  Enter: Select  Back: Previous  Esc: Cancel",
         script_version
@@ -22575,6 +22420,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     __shell.set_status(0);
     let mut dry_run = String::from("0");
     __shell.set_var("DRY_RUN", dry_run.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut debug_mode = match __shell
         .get_var("DEBUG_MODE")
@@ -22585,6 +22435,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ => String::from("0"),
     };
     __shell.set_var("DEBUG_MODE", debug_mode.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut max_retries = match __shell
         .get_var("MAX_RETRIES")
@@ -22595,6 +22453,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ => String::from("3"),
     };
     __shell.set_var("MAX_RETRIES", max_retries.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut retry_delay = match __shell
         .get_var("RETRY_DELAY")
@@ -22605,288 +22474,9364 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ => String::from("2"),
     };
     __shell.set_var("RETRY_DELAY", retry_delay.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut log_file = String::from("");
     __shell.set_var("LOG_FILE", log_file.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut tui_backend = String::from("");
     __shell.set_var("TUI_BACKEND", tui_backend.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut ui_result = String::from("");
     __shell.set_var("UI_RESULT", ui_result.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut cleanup_needed = String::from("0");
     __shell.set_var("CLEANUP_NEEDED", cleanup_needed.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut in_cleanup = String::from("0");
     __shell.set_var("IN_CLEANUP", in_cleanup.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut term_rows = String::from("24");
     __shell.set_var("TERM_ROWS", term_rows.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut term_cols = String::from("80");
     __shell.set_var("TERM_COLS", term_cols.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut ui_h = String::from("16");
     __shell.set_var("UI_H", ui_h.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut ui_w = String::from("72");
     __shell.set_var("UI_W", ui_w.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut ui_list_h = String::from("10");
     __shell.set_var("UI_LIST_H", ui_list_h.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_active = String::from("0");
     __shell.set_var("DASH_ACTIVE", dash_active.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_start_epoch = String::from("0");
     __shell.set_var("DASH_START_EPOCH", dash_start_epoch.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_cur_idx = String::from("0");
     __shell.set_var("DASH_CUR_IDX", dash_cur_idx.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_cur_pct = String::from("0");
     __shell.set_var("DASH_CUR_PCT", dash_cur_pct.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_cur_detail = String::from("");
     __shell.set_var("DASH_CUR_DETAIL", dash_cur_detail.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_total_weight = String::from("100");
     __shell.set_var("DASH_TOTAL_WEIGHT", dash_total_weight.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dash_last_render = String::from("0");
     __shell.set_var("DASH_LAST_RENDER", dash_last_render.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("DASH_STEP_NAMES=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("DASH_STEP_WEIGHTS=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("DASH_STEP_STATUS=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("DASH_LOG_BUF=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let mut boot_mode = String::from("uefi");
     __shell.set_var("BOOT_MODE", boot_mode.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut cpu_vendor = String::from("");
     __shell.set_var("CPU_VENDOR", cpu_vendor.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut cpu_ucode = String::from("");
     __shell.set_var("CPU_UCODE", cpu_ucode.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut gpu_hint = String::from("auto");
     __shell.set_var("GPU_HINT", gpu_hint.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut vm_hint = String::from("generic");
     __shell.set_var("VM_HINT", vm_hint.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut total_ram_mb = String::from("0");
     __shell.set_var("TOTAL_RAM_MB", total_ram_mb.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut disk_name = String::from("");
     __shell.set_var("DISK_NAME", disk_name.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut disk = String::from("");
     __shell.set_var("DISK", disk.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut boot_part = String::from("");
     __shell.set_var("BOOT_PART", boot_part.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut root_part = String::from("");
     __shell.set_var("ROOT_PART", root_part.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut root_dev = String::from("");
     __shell.set_var("ROOT_DEV", root_dev.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut bios_part = String::from("");
     __shell.set_var("BIOS_PART", bios_part.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut bootloader = String::from("systemd-boot");
     __shell.set_var("BOOTLOADER", bootloader.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut use_encryption = String::from("luks2");
     __shell.set_var("USE_ENCRYPTION", use_encryption.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut fs_type = String::from("btrfs");
     __shell.set_var("FS_TYPE", fs_type.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut btrfs_use_subvols = String::from("yes");
     __shell.set_var("BTRFS_USE_SUBVOLS", btrfs_use_subvols.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut kernel = String::from("linux");
     __shell.set_var("KERNEL", kernel.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut user_name = String::from("");
     __shell.set_var("USER_NAME", user_name.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut host_name = String::from("archlinux");
     __shell.set_var("HOST_NAME", host_name.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut user_shell = String::from("bash");
     __shell.set_var("USER_SHELL", user_shell.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut user_pass = String::from("");
     __shell.set_var("USER_PASS", user_pass.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut root_pass = String::from("");
     __shell.set_var("ROOT_PASS", root_pass.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut root_pass_mode = String::from("same");
     __shell.set_var("ROOT_PASS_MODE", root_pass_mode.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut luks_pass = String::from("");
     __shell.set_var("LUKS_PASS", luks_pass.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut luks_pass2 = String::from("");
     __shell.set_var("LUKS_PASS2", luks_pass2.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut real_luks_uuid = String::from("");
     __shell.set_var("REAL_LUKS_UUID", real_luks_uuid.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut root_uuid = String::from("");
     __shell.set_var("ROOT_UUID", root_uuid.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut tz_region = String::from("UTC");
     __shell.set_var("TZ_REGION", tz_region.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut timezone_city = String::from("");
     __shell.set_var("TIMEZONE_CITY", timezone_city.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut timezone = String::from("UTC");
     __shell.set_var("TIMEZONE", timezone.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut locale = String::from("en_US");
     __shell.set_var("LOCALE", locale.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut keyboard = String::from("us");
     __shell.set_var("KEYBOARD", keyboard.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut de_choice = String::from("minimal");
     __shell.set_var("DE_CHOICE", de_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut dm_choice = String::from("none");
     __shell.set_var("DM_CHOICE", dm_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut auto_startx = String::from("no");
     __shell.set_var("AUTO_STARTX", auto_startx.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut gpu_choice = String::from("auto");
     __shell.set_var("GPU_CHOICE", gpu_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut vm_guest_type = String::from("generic");
     __shell.set_var("VM_GUEST_TYPE", vm_guest_type.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut audio_choice = String::from("pipewire");
     __shell.set_var("AUDIO_CHOICE", audio_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut network_choice = String::from("networkmanager");
     __shell.set_var("NETWORK_CHOICE", network_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut swap_choice = String::from("zram");
     __shell.set_var("SWAP_CHOICE", swap_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut swap_size = String::from("auto");
     __shell.set_var("SWAP_SIZE", swap_size.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut firewall_choice = String::from("ufw");
     __shell.set_var("FIREWALL_CHOICE", firewall_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut aur_choice = String::from("none");
     __shell.set_var("AUR_CHOICE", aur_choice.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_bluetooth = String::from("no");
     __shell.set_var("EXTRA_BLUETOOTH", extra_bluetooth.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_flatpak = String::from("no");
     __shell.set_var("EXTRA_FLATPAK", extra_flatpak.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_cups = String::from("no");
     __shell.set_var("EXTRA_CUPS", extra_cups.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_snapper = String::from("no");
     __shell.set_var("EXTRA_SNAPPER", extra_snapper.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_reflector = String::from("yes");
     __shell.set_var("EXTRA_REFLECTOR", extra_reflector.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_multilib = String::from("no");
     __shell.set_var("EXTRA_MULTILIB", extra_multilib.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let mut extra_custom_pkgs = String::from("");
     __shell.set_var("EXTRA_CUSTOM_PKGS", extra_custom_pkgs.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("LOCALE_MENU=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("KEYBOARD_MENU=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("declare");
         let __args: Vec<String> = vec![String::from("-a"), String::from("PACKAGES=()")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     let red = String::from("\\033[0;31m");
     __shell.set_var("RED", red.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let green = String::from("\\033[0;32m");
     __shell.set_var("GREEN", green.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let yellow = String::from("\\033[1;33m");
     __shell.set_var("YELLOW", yellow.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let cyan = String::from("\\033[0;36m");
     __shell.set_var("CYAN", cyan.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let bold = String::from("\\033[1m");
     __shell.set_var("BOLD", bold.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     let nc = String::from("\\033[0m");
     __shell.set_var("NC", nc.clone());
+    if __shell.has_namerefs() {
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS2") {
+            luks_pass2 = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_LIST_H") {
+            ui_list_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LUKS_PASS") {
+            luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
+            dash_active = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
+            total_ram_mb = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DE_CHOICE") {
+            de_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOG_FILE") {
+            log_file = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
+            firewall_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("FS_TYPE") {
+            fs_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+    }
     __shell.set_status(0);
     {
         let __prog = String::from("trap");
         let __args: Vec<String> = vec![String::from("on_error \"$LINENO\""), String::from("ERR")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("trap");
         let __args: Vec<String> = vec![String::from("on_exit"), String::from("EXIT")];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let __prog = String::from("trap");
@@ -22897,126 +31842,66 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ];
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         let _ = __shell.run_command(&__prog, &__arg_refs)?;
-        __shell.check_errexit();
+        __shell.check_errexit()?;
     }
     {
         let mut __args: Vec<String> = Vec::new();
         __args.extend(args.iter().map(|s| (*s).to_owned()));
         let __arg_refs: Vec<&str> = __args.iter().map(String::as_str).collect();
         main_2(&mut __shell, &__arg_refs)?;
-        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
-            real_luks_uuid = __v.to_owned();
+        if let Some(__v) = __shell.get_var("KEYBOARD") {
+            keyboard = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
-            gpu_choice = __v.to_owned();
+        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
+            cleanup_needed = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
-            cpu_vendor = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TIMEZONE") {
-            timezone = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
-            aur_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_HINT") {
-            vm_hint = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("CPU_UCODE") {
-            cpu_ucode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
-            vm_guest_type = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
-            tui_backend = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_RESULT") {
-            ui_result = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_NAME") {
-            user_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
-            swap_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
-            retry_delay = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BIOS_PART") {
+            bios_part = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("LUKS_PASS2") {
             luks_pass2 = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_UUID") {
-            root_uuid = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("LOCALE") {
-            locale = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
-            dash_total_weight = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
-            dash_cur_detail = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
-            root_pass_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
-            audio_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_W") {
-            ui_w = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
-            extra_custom_pkgs = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
-            dash_start_epoch = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DRY_RUN") {
-            dry_run = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
-            dash_cur_idx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PASS") {
-            root_pass = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("TZ_REGION") {
-            tz_region = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
-            extra_bluetooth = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("UI_H") {
-            ui_h = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
-            dash_last_render = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DISK") {
-            disk = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
-            extra_cups = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
+            auto_startx = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("UI_LIST_H") {
             ui_list_h = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
-            btrfs_use_subvols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_PASS_MODE") {
+            root_pass_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("GPU_HINT") {
-            gpu_hint = __v.to_owned();
+        if let Some(__v) = __shell.get_var("ROOT_UUID") {
+            root_uuid = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
-            extra_flatpak = __v.to_owned();
+        if let Some(__v) = __shell.get_var("HOST_NAME") {
+            host_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DISK_NAME") {
-            disk_name = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_W") {
+            ui_w = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("LUKS_PASS") {
             luks_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("AUDIO_CHOICE") {
+            audio_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_CUSTOM_PKGS") {
+            extra_custom_pkgs = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("LOCALE") {
+            locale = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_START_EPOCH") {
+            dash_start_epoch = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PART") {
+            root_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
+            use_encryption = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE") {
+            timezone = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DASH_ACTIVE") {
             dash_active = __v.to_owned();
@@ -23024,100 +31909,160 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(__v) = __shell.get_var("TOTAL_RAM_MB") {
             total_ram_mb = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
-            timezone_city = __v.to_owned();
+        if let Some(__v) = __shell.get_var("DISK") {
+            disk = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DM_CHOICE") {
-            dm_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BIOS_PART") {
-            bios_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOTLOADER") {
-            bootloader = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
-            max_retries = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USE_ENCRYPTION") {
-            use_encryption = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
-            in_cleanup = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KERNEL") {
-            kernel = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("HOST_NAME") {
-            host_name = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("USER_SHELL") {
-            user_shell = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("ROOT_PART") {
-            root_part = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
-            extra_reflector = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("KEYBOARD") {
-            keyboard = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
-            network_choice = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
-            extra_multilib = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
-            extra_snapper = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
-            dash_cur_pct = __v.to_owned();
+        if let Some(__v) = __shell.get_var("RETRY_DELAY") {
+            retry_delay = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("DE_CHOICE") {
             de_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
-            debug_mode = __v.to_owned();
+        if let Some(__v) = __shell.get_var("GPU_CHOICE") {
+            gpu_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("CLEANUP_NEEDED") {
-            cleanup_needed = __v.to_owned();
+        if let Some(__v) = __shell.get_var("UI_RESULT") {
+            ui_result = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("AUTO_STARTX") {
-            auto_startx = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("BOOT_MODE") {
-            boot_mode = __v.to_owned();
-        }
-        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
-            swap_size = __v.to_owned();
+        if let Some(__v) = __shell.get_var("NETWORK_CHOICE") {
+            network_choice = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("LOG_FILE") {
             log_file = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_COLS") {
-            term_cols = __v.to_owned();
+        if let Some(__v) = __shell.get_var("EXTRA_CUPS") {
+            extra_cups = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("TERM_ROWS") {
-            term_rows = __v.to_owned();
+        if let Some(__v) = __shell.get_var("BOOT_MODE") {
+            boot_mode = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("ROOT_DEV") {
-            root_dev = __v.to_owned();
+        if let Some(__v) = __shell.get_var("USER_NAME") {
+            user_name = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("USER_PASS") {
-            user_pass = __v.to_owned();
+        if let Some(__v) = __shell.get_var("REAL_LUKS_UUID") {
+            real_luks_uuid = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("MAX_RETRIES") {
+            max_retries = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_MULTILIB") {
+            extra_multilib = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_GUEST_TYPE") {
+            vm_guest_type = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_LAST_RENDER") {
+            dash_last_render = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_CHOICE") {
+            swap_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TIMEZONE_CITY") {
+            timezone_city = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("FIREWALL_CHOICE") {
             firewall_choice = __v.to_owned();
         }
-        if let Some(__v) = __shell.get_var("BOOT_PART") {
-            boot_part = __v.to_owned();
+        if let Some(__v) = __shell.get_var("AUR_CHOICE") {
+            aur_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("UI_H") {
+            ui_h = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DISK_NAME") {
+            disk_name = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_PASS") {
+            root_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_PCT") {
+            dash_cur_pct = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("IN_CLEANUP") {
+            in_cleanup = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_DETAIL") {
+            dash_cur_detail = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DM_CHOICE") {
+            dm_choice = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("GPU_HINT") {
+            gpu_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_CUR_IDX") {
+            dash_cur_idx = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("ROOT_DEV") {
+            root_dev = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_VENDOR") {
+            cpu_vendor = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_BLUETOOTH") {
+            extra_bluetooth = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_REFLECTOR") {
+            extra_reflector = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOTLOADER") {
+            bootloader = __v.to_owned();
         }
         if let Some(__v) = __shell.get_var("FS_TYPE") {
             fs_type = __v.to_owned();
         }
-        __shell.check_errexit();
+        if let Some(__v) = __shell.get_var("EXTRA_FLATPAK") {
+            extra_flatpak = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("SWAP_SIZE") {
+            swap_size = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("VM_HINT") {
+            vm_hint = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("EXTRA_SNAPPER") {
+            extra_snapper = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TZ_REGION") {
+            tz_region = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_PASS") {
+            user_pass = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_ROWS") {
+            term_rows = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("KERNEL") {
+            kernel = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BOOT_PART") {
+            boot_part = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("BTRFS_USE_SUBVOLS") {
+            btrfs_use_subvols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DRY_RUN") {
+            dry_run = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TUI_BACKEND") {
+            tui_backend = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("USER_SHELL") {
+            user_shell = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("TERM_COLS") {
+            term_cols = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DASH_TOTAL_WEIGHT") {
+            dash_total_weight = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("CPU_UCODE") {
+            cpu_ucode = __v.to_owned();
+        }
+        if let Some(__v) = __shell.get_var("DEBUG_MODE") {
+            debug_mode = __v.to_owned();
+        }
+        __shell.check_errexit()?;
     }
     __shell.run_exit_trap();
     Ok(())

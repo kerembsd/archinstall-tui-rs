@@ -21,7 +21,7 @@ dependencies = [
 [[package]]
 name = "bash2rust-runtime"
 version = "0.1.0"
-source = "git+https://github.com/kerembsd/bash2rust#ac1fa74e44371b8a0eda45502ea6fb2057c30f36"
+source = "git+https://github.com/kerembsd/bash2rust#b73c13de9be6b7ae8e91d18000d0ab424dca931f"
 dependencies = [
  "libc",
  "regex",
