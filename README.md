@@ -23,7 +23,7 @@ Rust port of [kerembsd/archinstall_tui](https://github.com/kerembsd/archinstall_
 
 ## Build & Usage
 
-Build the release binary:
+`archinstall-tui-rs` is a self-contained Rust crate (`src/runtime.rs` embedded, depending only on `libc`, `regex`, and `thiserror` with no dependency on `bash2rust`). Build the release binary directly:
 
 ```bash
 cargo build --release
