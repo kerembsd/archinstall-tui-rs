@@ -1,0 +1,12 @@
+[package]
+name = "archinstall-tui-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Rust port of archinstall_tui, transpiled from Bash via bash2rust"
+license = "MIT"
+repository = "https://github.com/kerembsd/archinstall-tui-rs"
+
+[workspace]
+
+[dependencies]
+bash2rust-runtime = { git = "https://github.com/kerembsd/bash2rust" }
